@@ -76,7 +76,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
         <h1>Progress</h1>
         <p class="lead">A quiet 8px track with a token-colored fill.</p>
         <section id="default"><h2>Progress<a class="hlink" href="#default" aria-label="Link to Progress">#</a></h2>
-<p>An 8px track on <code class="tok">gray-alpha-200</code>; the fill is <code class="tok">gray-1000</code> by default and may take a status color.</p><div class="demo-panel col"><div class="gfield" style="width:100%;max-width:320px"><label>Default · 60%</label><div class="gprogress"><span style="width:60%"></span></div></div><div class="gfield" style="width:100%;max-width:320px"><label>Success · 100%</label><div class="gprogress"><span style="width:100%;background:var(--c-green-700)"></span></div></div><div class="gfield" style="width:100%;max-width:320px"><label>Error · 35%</label><div class="gprogress"><span style="width:35%;background:var(--c-red-700)"></span></div></div></div>
+<p>An 8px track on <code class="tok">gray-alpha-200</code>; the fill is <code class="tok">gray-1000</code> by default and may take a status color.</p><div class="demo-panel col"><div class="gfield" style="width:100%;max-width:320px"><span class="flabel">Default · 60%</span><div class="gprogress" role="progressbar" aria-label="Default · 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><span style="width:60%"></span></div></div><div class="gfield" style="width:100%;max-width:320px"><span class="flabel">Success · 100%</span><div class="gprogress" role="progressbar" aria-label="Success · 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="width:100%;background:var(--c-green-700)"></span></div></div><div class="gfield" style="width:100%;max-width:320px"><span class="flabel">Error · 35%</span><div class="gprogress" role="progressbar" aria-label="Error · 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"><span style="width:35%;background:var(--c-red-700)"></span></div></div></div>
 </section>
         <nav class="pager" aria-label="Pagination"><a class="prev" href="pagination.html"><span class="dir">Previous</span><span class="pg">Pagination</span></a><a class="next" href="radio.html"><span class="dir">Next</span><span class="pg">Radio</span></a></nav>
         <footer class="foot">
@@ -94,7 +94,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
     <div class="search-head">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <input id="searchInput" type="text" placeholder="Search pages and tokens…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" type="text" placeholder="Search pages and tokens…" aria-label="Search pages and tokens" autocomplete="off" spellcheck="false">
       <kbd>esc</kbd>
     </div>
     <div class="search-results" id="searchResults"></div>

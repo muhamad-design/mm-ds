@@ -76,7 +76,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
         <h1>Note</h1>
         <p class="lead">Compact inline messages on the 100/400/900 recipe of each scale.</p>
         <section id="variants"><h2>Variants<a class="hlink" href="#variants" aria-label="Link to Variants">#</a></h2>
-<p>Notes are compact inline messages: <code class="tok">100</code> background, <code class="tok">400</code> border, <code class="tok">900</code> text of their scale.</p><div class="demo-panel col"><div class="gnote" style="background:var(--c-background-100);border-color:var(--c-gray-alpha-400);color:var(--c-gray-900)">This deployment is public.</div><div class="gnote" style="background:var(--c-blue-100);border-color:var(--c-blue-400);color:var(--c-blue-900)">A newer deployment exists.</div><div class="gnote" style="background:var(--c-green-100);border-color:var(--c-green-400);color:var(--c-green-900)">Checks passed.</div><div class="gnote" style="background:var(--c-amber-100);border-color:var(--c-amber-400);color:var(--c-amber-900)">Certificate renews in 7 days.</div><div class="gnote" style="background:var(--c-red-100);border-color:var(--c-red-400);color:var(--c-red-900)">This action cannot be undone.</div></div>
+<p>Notes are compact inline messages: <code class="tok">100</code> background, <code class="tok">400</code> border, <code class="tok">900</code> text of their scale. The default gray note stays on <code class="tok">background-100</code> with the standard <code class="tok">gray-alpha-400</code> border.</p><div class="demo-panel col"><div class="gnote" style="background:var(--c-background-100);border-color:var(--c-gray-alpha-400);color:var(--c-gray-900)">This deployment is public.</div><div class="gnote" style="background:var(--c-blue-100);border-color:var(--c-blue-400);color:var(--c-blue-900)">A newer deployment exists.</div><div class="gnote" style="background:var(--c-green-100);border-color:var(--c-green-400);color:var(--c-green-900)">Checks passed.</div><div class="gnote" style="background:var(--c-amber-100);border-color:var(--c-amber-400);color:var(--c-amber-900)">Certificate renews in 7 days.</div><div class="gnote" style="background:var(--c-red-100);border-color:var(--c-red-400);color:var(--c-red-900)">This action cannot be undone.</div></div>
 </section>
         <nav class="pager" aria-label="Pagination"><a class="prev" href="kbd.html"><span class="dir">Previous</span><span class="pg">Keyboard Input</span></a><a class="next" href="pagination.html"><span class="dir">Next</span><span class="pg">Pagination</span></a></nav>
         <footer class="foot">
@@ -94,7 +94,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
     <div class="search-head">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <input id="searchInput" type="text" placeholder="Search pages and tokens…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" type="text" placeholder="Search pages and tokens…" aria-label="Search pages and tokens" autocomplete="off" spellcheck="false">
       <kbd>esc</kbd>
     </div>
     <div class="search-results" id="searchResults"></div>

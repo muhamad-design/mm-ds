@@ -76,7 +76,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
         <h1>Tooltip</h1>
         <p class="lead">Inverted, shadowed hints that never hold critical information.</p>
         <section id="default"><h2>Tooltip<a class="hlink" href="#default" aria-label="Link to Tooltip">#</a></h2>
-<p>Tooltips invert the surface: <code class="tok">gray-1000</code> background, <code class="tok">background-100</code> text, 6px radius, and the small shadow tier. They take the lightest elevation and never hold critical information.</p><div class="demo-panel tall"><span class="gtip-wrap"><button class="gbtn gbtn-secondary" type="button">Static</button><span class="gtip" role="tooltip">Copied to clipboard</span></span><span class="gtip-wrap gtip-hover"><button class="gbtn gbtn-secondary" type="button">Hover me</button><span class="gtip" role="tooltip">Deploys to production</span></span></div>
+<p>Tooltips invert the surface: <code class="tok">gray-1000</code> background, <code class="tok">background-100</code> text, 6px radius, and the small shadow tier. They take the lightest elevation and never hold critical information.</p><div class="demo-panel tall"><span class="gtip-wrap"><button class="gbtn gbtn-secondary" type="button" aria-describedby="tip-static">Static</button><span class="gtip" role="tooltip" id="tip-static">Copied to clipboard</span></span><span class="gtip-wrap gtip-hover"><button class="gbtn gbtn-secondary" type="button" aria-describedby="tip-hover">Hover me</button><span class="gtip" role="tooltip" id="tip-hover">Deploys to production</span></span></div>
 </section>
         <nav class="pager" aria-label="Pagination"><a class="prev" href="textarea.html"><span class="dir">Previous</span><span class="pg">Textarea</span></a><a class="next" href="ai.html"><span class="dir">Next</span><span class="pg">AI &amp; agents</span></a></nav>
         <footer class="foot">
@@ -94,7 +94,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
     <div class="search-head">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <input id="searchInput" type="text" placeholder="Search pages and tokens…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" type="text" placeholder="Search pages and tokens…" aria-label="Search pages and tokens" autocomplete="off" spellcheck="false">
       <kbd>esc</kbd>
     </div>
     <div class="search-results" id="searchResults"></div>

@@ -378,7 +378,7 @@ def comp_spec_table(names):
         c = CO[n]
         rows.append(
             f'<tr><td class="mono"><code class="tok">{esc(n)}</code></td>'
-            f'<td class="mono">{esc(c.get("backgroundColor", "transparent"))}</td>'
+            f'<td class="mono">{esc(c.get("backgroundColor", "-"))}</td>'
             f'<td class="mono">{esc(c.get("textColor", "-"))}</td>'
             f'<td class="mono">{esc(c.get("typography", "-"))}</td>'
             f'<td class="mono">{esc(c.get("rounded", "-"))}</td>'
@@ -402,8 +402,11 @@ def c_avatar():
 
 
 def c_badge():
+    # White text holds AA only on the darker solid fills; bright fills take black.
+    dark_text_scales = {"amber", "teal", "green", "pink", "red"}
     def solid(scale):
-        return (f'<span class="gbadge" style="background:{var_c(scale + "-700")};color:#ffffff">'
+        text = "#000000" if scale in dark_text_scales else "#ffffff"
+        return (f'<span class="gbadge" style="background:{var_c(scale + "-700")};color:{text}">'
                 f'{esc(scale)}</span>')
     def subtle(scale):
         return (f'<span class="gbadge" style="background:{var_c(scale + "-100")};'
@@ -415,8 +418,9 @@ def c_badge():
              f'<span class="gbadge sz-lg" style="background:{var_c("gray-1000")};color:{var_c("background-100")}">Large</span>')
     return [
         ("variants", "Variants", (
-            '<p>Solid badges use the <code class="tok">700</code> step with white text; subtle badges pair '
-            '<code class="tok">100</code> backgrounds with <code class="tok">900</code> text.</p>'
+            '<p>Solid badges use the <code class="tok">700</code> step with a black or white label - whichever '
+            'holds AA contrast on that fill (gray steps up to <code class="tok">gray-1000</code>). Subtle badges '
+            'pair <code class="tok">100</code> backgrounds with <code class="tok">900</code> text.</p>'
             + demo(gray_solid + "".join(solid(a) for a in ACCENTS))
             + demo(gray_subtle + "".join(subtle(a) for a in ACCENTS)))),
         ("sizes", "Sizes", demo(sizes)),
@@ -458,10 +462,11 @@ def c_button():
             + comp_spec_table(["button-primary", "button-secondary", "button-tertiary", "button-error"]))),
         ("sizes", "Sizes", demo(sizes) + comp_spec_table(["button-small", "button-large"])),
         ("states", "States", (
-            '<p>Fills step <code class="tok">100</code> to <code class="tok">200</code> on hover and '
-            '<code class="tok">300</code> on active; borders step <code class="tok">400</code> to '
-            '<code class="tok">500</code> to <code class="tok">600</code>. Disabled uses a '
-            '<code class="tok">gray-100</code> fill and <code class="tok">gray-700</code> text.</p>'
+            '<p>States move along the scale rather than inventing values: alpha tints deepen one step on hover '
+            'and again on press (tertiary rests transparent, hovers <code class="tok">gray-alpha-200</code>, '
+            'presses <code class="tok">gray-alpha-300</code>); borders step <code class="tok">400</code> to '
+            '<code class="tok">500</code> to <code class="tok">600</code>; solid fills step down one on hover. '
+            'Disabled uses a <code class="tok">gray-100</code> fill and <code class="tok">gray-700</code> text.</p>'
             + demo(states))),
     ]
 
@@ -550,7 +555,9 @@ def c_note():
     return [
         ("variants", "Variants", (
             '<p>Notes are compact inline messages: <code class="tok">100</code> background, '
-            '<code class="tok">400</code> border, <code class="tok">900</code> text of their scale.</p>'
+            '<code class="tok">400</code> border, <code class="tok">900</code> text of their scale. The default '
+            'gray note stays on <code class="tok">background-100</code> with the standard '
+            '<code class="tok">gray-alpha-400</code> border.</p>'
             + demo(plain +
                    note("blue", "A newer deployment exists.") +
                    note("green", "Checks passed.") +
@@ -577,12 +584,14 @@ def c_pagination():
 
 
 def c_progress():
-    bars = (f'<div class="gfield" style="width:100%;max-width:320px"><label>Default · 60%</label>'
-            f'<div class="gprogress"><span style="width:60%"></span></div></div>'
-            f'<div class="gfield" style="width:100%;max-width:320px"><label>Success · 100%</label>'
-            f'<div class="gprogress"><span style="width:100%;background:{var_c("green-700")}"></span></div></div>'
-            f'<div class="gfield" style="width:100%;max-width:320px"><label>Error · 35%</label>'
-            f'<div class="gprogress"><span style="width:35%;background:{var_c("red-700")}"></span></div></div>')
+    def bar(label, pct, fill=""):
+        style = f"width:{pct}%" + (f";background:{fill}" if fill else "")
+        return (f'<div class="gfield" style="width:100%;max-width:320px"><span class="flabel">{esc(label)}</span>'
+                f'<div class="gprogress" role="progressbar" aria-label="{esc(label)}" aria-valuenow="{pct}" '
+                f'aria-valuemin="0" aria-valuemax="100"><span style="{style}"></span></div></div>')
+    bars = (bar("Default · 60%", 60)
+            + bar("Success · 100%", 100, var_c("green-700"))
+            + bar("Error · 35%", 35, var_c("red-700")))
     return [
         ("default", "Progress", (
             '<p>An 8px track on <code class="tok">gray-alpha-200</code>; the fill is '
@@ -691,10 +700,12 @@ def c_textarea():
 
 
 def c_tooltip():
-    tip = ('<span class="gtip-wrap"><button class="gbtn gbtn-secondary" type="button">Static</button>'
-           '<span class="gtip" role="tooltip">Copied to clipboard</span></span>'
-           '<span class="gtip-wrap gtip-hover"><button class="gbtn gbtn-secondary" type="button">Hover me</button>'
-           '<span class="gtip" role="tooltip">Deploys to production</span></span>')
+    tip = ('<span class="gtip-wrap"><button class="gbtn gbtn-secondary" type="button" '
+           'aria-describedby="tip-static">Static</button>'
+           '<span class="gtip" role="tooltip" id="tip-static">Copied to clipboard</span></span>'
+           '<span class="gtip-wrap gtip-hover"><button class="gbtn gbtn-secondary" type="button" '
+           'aria-describedby="tip-hover">Hover me</button>'
+           '<span class="gtip" role="tooltip" id="tip-hover">Deploys to production</span></span>')
     return [
         ("default", "Tooltip", (
             '<p>Tooltips invert the surface: <code class="tok">gray-1000</code> background, '
@@ -877,7 +888,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
     <div class="search-head">
       {SEARCH_SVG}
-      <input id="searchInput" type="text" placeholder="Search pages and tokens…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" type="text" placeholder="Search pages and tokens…" aria-label="Search pages and tokens" autocomplete="off" spellcheck="false">
       <kbd>esc</kbd>
     </div>
     <div class="search-results" id="searchResults"></div>
