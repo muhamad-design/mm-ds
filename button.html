@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="mm-ds - a Geist-based design system: tokens, typography, components, and machine-readable specs.">
-<title>mm-ds · Geist-based design system</title>
+<meta name="description" content="mm-ds Button - token-driven component demos and states.">
+<title>Button · mm-ds</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <script>(function(){var p='system';try{p=localStorage.getItem('mmds-theme')||'system'}catch(e){}
 var d=p==='system'?(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;
@@ -37,7 +37,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     <nav class="sidebar" id="sidebar" aria-label="Site navigation">
       <div class="nav-scroll">
         <div class="nav-group">Foundations</div>
-        <a href="index.html" aria-current="page">Introduction</a>
+        <a href="index.html">Introduction</a>
         <a href="colors.html">Colors</a>
         <a href="typography.html">Typography</a>
         <a href="materials.html">Materials</a>
@@ -47,7 +47,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
         <a href="avatar.html">Avatar</a>
         <a href="badge.html">Badge</a>
         <a href="banner.html">Banner</a>
-        <a href="button.html">Button</a>
+        <a href="button.html" aria-current="page">Button</a>
         <a href="checkbox.html">Checkbox</a>
         <a href="code-block.html">Code Block</a>
         <a href="empty-state.html">Empty State</a>
@@ -73,29 +73,18 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     <div class="backdrop" id="navBackdrop"></div>
     <main class="main" id="content">
       <article class="doc">
-        <h1>mm-ds</h1>
-        <p class="lead">A Geist-based design system for mm products: minimal, high-contrast, light and dark. Token-for-token aligned with Vercel&#x27;s public Geist reference, and readable by people and AI agents alike.</p>
-        <section id="foundations"><h2>Foundations<a class="hlink" href="#foundations" aria-label="Link to Foundations">#</a></h2>
-<div class="card-grid"><a class="card" href="colors.html"><span class="card-title">Colors</span><p>Ten-step scales where every step has a job: backgrounds, borders, fills, text.</p></a><a class="card" href="typography.html"><span class="card-title">Typography</span><p>Geist Sans and Geist Mono across heading, label, copy, and button tokens.</p></a><a class="card" href="materials.html"><span class="card-title">Materials</span><p>Borders first, then three quiet shadow tiers and the focus ring.</p></a></div>
+        <h1>Button</h1>
+        <p class="lead">Four variants and three sizes, specified entirely by tokens.</p>
+        <section id="variants"><h2>Variants<a class="hlink" href="#variants" aria-label="Link to Variants">#</a></h2>
+<p>Primary is for the single most important action on a view; secondary is the default; tertiary is low-emphasis; error is for destructive actions only.</p><div class="demo-panel"><button class="gbtn gbtn-primary" type="button">Deploy Project</button><button class="gbtn gbtn-secondary" type="button">View Logs</button><button class="gbtn gbtn-tertiary" type="button">Cancel</button><button class="gbtn gbtn-error" type="button">Delete Member</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Token</th><th>Background</th><th>Text</th><th>Type</th><th>Radius</th><th>Padding</th><th>Height</th></tr></thead><tbody><tr><td class="mono"><code class="tok">button-primary</code></td><td class="mono">{colors.primary}</td><td class="mono">{colors.background-100}</td><td class="mono">{typography.button-14}</td><td class="mono">{rounded.sm}</td><td class="mono">0 10px</td><td class="mono">40px</td></tr><tr><td class="mono"><code class="tok">button-secondary</code></td><td class="mono">{colors.background-100}</td><td class="mono">{colors.primary}</td><td class="mono">{typography.button-14}</td><td class="mono">{rounded.sm}</td><td class="mono">0 10px</td><td class="mono">40px</td></tr><tr><td class="mono"><code class="tok">button-tertiary</code></td><td class="mono">transparent</td><td class="mono">{colors.primary}</td><td class="mono">{typography.button-14}</td><td class="mono">{rounded.sm}</td><td class="mono">0 10px</td><td class="mono">40px</td></tr><tr><td class="mono"><code class="tok">button-error</code></td><td class="mono">{colors.red-800}</td><td class="mono">#ffffff</td><td class="mono">{typography.button-14}</td><td class="mono">{rounded.sm}</td><td class="mono">0 10px</td><td class="mono">40px</td></tr></tbody></table></div>
 </section>
-<section id="components"><h2>Components<a class="hlink" href="#components" aria-label="Link to Components">#</a></h2>
-<p>Interface building blocks rendered live from the same variables this site ships.</p><div class="chiplinks"><a class="chiplink" href="avatar.html">Avatar</a> <a class="chiplink" href="badge.html">Badge</a> <a class="chiplink" href="banner.html">Banner</a> <a class="chiplink" href="button.html">Button</a> <a class="chiplink" href="checkbox.html">Checkbox</a> <a class="chiplink" href="code-block.html">Code Block</a> <a class="chiplink" href="empty-state.html">Empty State</a> <a class="chiplink" href="input.html">Input</a> <a class="chiplink" href="kbd.html">Keyboard Input</a> <a class="chiplink" href="note.html">Note</a> <a class="chiplink" href="pagination.html">Pagination</a> <a class="chiplink" href="progress.html">Progress</a> <a class="chiplink" href="radio.html">Radio</a> <a class="chiplink" href="select.html">Select</a> <a class="chiplink" href="skeleton.html">Skeleton</a> <a class="chiplink" href="spinner.html">Spinner</a> <a class="chiplink" href="switch.html">Switch</a> <a class="chiplink" href="table.html">Table</a> <a class="chiplink" href="textarea.html">Textarea</a> <a class="chiplink" href="tooltip.html">Tooltip</a></div>
+<section id="sizes"><h2>Sizes<a class="hlink" href="#sizes" aria-label="Link to Sizes">#</a></h2>
+<div class="demo-panel"><button class="gbtn gbtn-primary gbtn-sm" type="button">Small · 32px</button><button class="gbtn gbtn-primary" type="button">Medium · 40px</button><button class="gbtn gbtn-primary gbtn-lg" type="button">Large · 48px</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Token</th><th>Background</th><th>Text</th><th>Type</th><th>Radius</th><th>Padding</th><th>Height</th></tr></thead><tbody><tr><td class="mono"><code class="tok">button-small</code></td><td class="mono">transparent</td><td class="mono">-</td><td class="mono">{typography.button-14}</td><td class="mono">{rounded.sm}</td><td class="mono">0 6px</td><td class="mono">32px</td></tr><tr><td class="mono"><code class="tok">button-large</code></td><td class="mono">transparent</td><td class="mono">-</td><td class="mono">{typography.button-16}</td><td class="mono">{rounded.sm}</td><td class="mono">0 14px</td><td class="mono">48px</td></tr></tbody></table></div>
 </section>
-<section id="consuming"><h2>Consuming the system<a class="hlink" href="#consuming" aria-label="Link to Consuming the system">#</a></h2>
-<p>Web surfaces can link the generated custom properties directly; agents and tools read the markdown specs or the YAML token files. The full rules for layout, shapes, motion, voice, and the do's and don'ts live in the specs.</p><pre class="code"><span class="c">/* web */</span>
-&lt;link rel="stylesheet" href="assets/tokens.css"&gt;
-color: var(--c-gray-1000);
-background: var(--c-background-100);
-border-radius: var(--rounded-sm);
-
-<span class="c"># AI agents - machine-readable specs</span>
-https://muhamad-design.github.io/mm-ds/design.md
-https://muhamad-design.github.io/mm-ds/design.dark.md</pre>
+<section id="states"><h2>States<a class="hlink" href="#states" aria-label="Link to States">#</a></h2>
+<p>Fills step <code class="tok">100</code> to <code class="tok">200</code> on hover and <code class="tok">300</code> on active; borders step <code class="tok">400</code> to <code class="tok">500</code> to <code class="tok">600</code>. Disabled uses a <code class="tok">gray-100</code> fill and <code class="tok">gray-700</code> text.</p><div class="demo-panel"><button class="gbtn" type="button" disabled>Disabled</button><button class="gbtn gbtn-secondary" type="button" style="box-shadow:var(--focus-ring)">Focused</button></div>
 </section>
-<section id="attribution"><h2>Attribution<a class="hlink" href="#attribution" aria-label="Link to Attribution">#</a></h2>
-<p>Token values follow Vercel's public Geist reference, published at <a href="https://vercel.com/design.md">vercel.com/design.md</a> for exactly this kind of reuse by tools and agents. mm-ds is an unofficial personal implementation and is not affiliated with or endorsed by Vercel. The Geist typefaces are used under the SIL Open Font License.</p>
-</section>
-        <nav class="pager" aria-label="Pagination"><a class="next" href="colors.html"><span class="dir">Next</span><span class="pg">Colors</span></a></nav>
+        <nav class="pager" aria-label="Pagination"><a class="prev" href="banner.html"><span class="dir">Previous</span><span class="pg">Banner</span></a><a class="next" href="checkbox.html"><span class="dir">Next</span><span class="pg">Checkbox</span></a></nav>
         <footer class="foot">
           <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
           <a href="design.md">design.md</a>·

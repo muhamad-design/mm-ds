@@ -5,8 +5,14 @@ mm-ds build - generates the docs site + machine-readable specs from tokens/.
   Inputs : tokens/geist.light.yaml, tokens/geist.dark.yaml
            (Geist token data - colors incl. P3, typography, spacing, rounded,
             components - as published in Vercel's public design.md)
-  Output : 11 HTML pages, assets/tokens.css, assets/search-index.js,
+  Output : HTML pages (foundations + brands + one page per component),
+           assets/tokens.css, assets/search-index.js,
            design.md, design.dark.md, .nojekyll
+
+Site IA mirrors vercel.com/geist: Foundations (Introduction, Colors,
+Typography, Materials), Brands, Components, plus a Reference group for the
+machine-readable specs. Layout/shapes/motion/voice rules live in design.md
+only, same as the reference.
 
 Hand-written, never generated: assets/ds.css, assets/ds.js.
 Run: python3 build.py
@@ -72,12 +78,6 @@ SHADOWS = {
 FOCUS = {"light": ("#ffffff", "#006bff", "blue-700"), "dark": ("#000000", "#47a8ff", "blue-900")}
 BREAKPOINTS = [("sm", "401px"), ("md", "601px"), ("lg", "961px"), ("xl", "1200px"), ("2xl", "1400px")]
 EASING = "cubic-bezier(0.175, 0.885, 0.32, 1.1)"
-DURATIONS = [
-    ("instant", 0, "The default. Most state changes read best with no transition at all."),
-    ("state", 150, "Small state changes - hover, press, selection."),
-    ("popover", 200, "Popovers, tooltips, dropdown menus."),
-    ("overlay", 300, "Overlays, modals, drawers."),
-]
 
 STEPS = [str(n) for n in range(100, 1100, 100)]
 ACCENTS = ["blue", "red", "amber", "green", "teal", "purple", "pink"]
@@ -87,11 +87,6 @@ STEP_ROLES = [
     ("700", "Solid fill, high contrast"), ("800", "Solid fill, hover"),
     ("900", "Secondary text and icons"), ("1000", "Primary text and icons"),
 ]
-SPACE_USE = {
-    "1": "Tightest gaps - icon to label", "2": "Inside a group", "3": "Compact padding",
-    "4": "Between groups; compact cards", "6": "Card padding", "8": "Between sections",
-    "10": "Large section breaks", "16": "Page-level air", "24": "Hero spacing",
-}
 
 
 def esc(s):
@@ -125,33 +120,36 @@ def color_table(names):
     return tbl(["", "Token", "Light", "Dark"], color_rows(names))
 
 
-def callout(title, items, cls=""):
+def callout(title, items):
     lis = "".join(f"<li>{i}</li>" for i in items)
-    return f'<div class="callout {cls}"><h4>{esc(title)}</h4><ul>{lis}</ul></div>'
+    return f'<div class="callout"><h4>{esc(title)}</h4><ul>{lis}</ul></div>'
 
 
-# ---- page content --------------------------------------------------------------
+def demo(inner, extra=""):
+    return f'<div class="demo-panel{(" " + extra) if extra else ""}">{inner}</div>'
+
+
+def var_c(name):
+    return f"var(--c-{name})"
+
+
+# ---- foundations ----------------------------------------------------------------
 def sec_index():
     foundations = [
         ("colors.html", "Colors", "Ten-step scales where every step has a job: backgrounds, borders, fills, text."),
         ("typography.html", "Typography", "Geist Sans and Geist Mono across heading, label, copy, and button tokens."),
-        ("layout.html", "Layout", "A 4px spacing scale, a 1200px content column, and five breakpoints."),
-        ("elevation.html", "Elevation", "Borders and tonal surfaces first; three quiet shadow tiers."),
-        ("motion.html", "Motion", "Instant by default; one springy curve when motion earns its place."),
-        ("shapes.html", "Shapes", "Tight radii: 6, 12, 16, and full - one family per view."),
-    ]
-    patterns = [
-        ("components.html", "Components", "Buttons and inputs as token recipes, with sizes and states."),
-        ("voice.html", "Voice & content", "How interface copy is written: precise, verb-first, no filler."),
-        ("guidelines.html", "Do's & don'ts", "The rules that keep every surface consistent and accessible."),
+        ("materials.html", "Materials", "Borders first, then three quiet shadow tiers and the focus ring."),
     ]
     def cards(items):
         return '<div class="card-grid">' + "".join(
             f'<a class="card" href="{f}"><span class="card-title">{esc(t)}</span><p>{esc(d)}</p></a>'
             for f, t, d in items) + "</div>"
+    comp_links = " ".join(
+        f'<a class="chiplink" href="{p["file"]}">{esc(p["title"])}</a>' for p in COMPONENT_PAGES)
     consuming = (
         '<p>Web surfaces can link the generated custom properties directly; agents and tools read the '
-        'markdown specs or the YAML token files.</p>'
+        'markdown specs or the YAML token files. The full rules for layout, shapes, motion, voice, and the '
+        'do\'s and don\'ts live in the specs.</p>'
         '<pre class="code"><span class="c">/* web */</span>\n'
         '&lt;link rel="stylesheet" href="assets/tokens.css"&gt;\n'
         'color: var(--c-gray-1000);\n'
@@ -162,14 +160,9 @@ def sec_index():
         f'{PAGES_URL}/design.dark.md</pre>')
     return [
         ("foundations", "Foundations", cards(foundations)),
-        ("patterns", "Patterns", cards(patterns)),
-        ("principles", "Principles", callout("What the system optimizes for", [
-            "<b>Minimal and high contrast.</b> Generous whitespace, near-neutral surfaces, restrained color.",
-            "<b>Color signals state.</b> Accents mark links, errors, and warnings - never decoration.",
-            "<b>Both themes are first-class.</b> Every token name resolves in light and dark; designs never branch on mode.",
-            "<b>Accessible by default.</b> WCAG AA contrast and a visible focus ring everywhere.",
-            "<b>Readable by machines.</b> The same tokens ship as YAML, CSS variables, and per-theme markdown specs.",
-        ])),
+        ("components", "Components", (
+            '<p>Interface building blocks rendered live from the same variables this site ships.</p>'
+            f'<div class="chiplinks">{comp_links}</div>')),
         ("consuming", "Consuming the system", consuming),
         ("attribution", "Attribution", (
             '<p>Token values follow Vercel\'s public Geist reference, published at '
@@ -283,223 +276,64 @@ def sec_typography():
     ]
 
 
-def sec_layout():
-    bars = []
-    for k, v in SP.items():
-        if k == "base":
-            continue
-        px = int(v[:-2])
-        pct = max(px / 96 * 100, 3)
-        bars.append(f'<div class="bar-row"><span class="bar-name"><code class="tok">spacing-{esc(k)}</code></span>'
-                    f'<span class="bar-val">{esc(v)}</span>'
-                    f'<span class="bar-track"><span class="bar-fill" style="width:{pct:.1f}%"></span></span>'
-                    f'<span class="bar-desc">{esc(SPACE_USE.get(k, ""))}</span></div>')
-    bp_rows = [f'<tr><td class="mono"><code class="tok">{n}</code></td><td class="mono">{copyb(v)}</td></tr>'
-               for n, v in BREAKPOINTS]
-    return [
-        ("spacing", "Spacing", (
-            '<p>Everything sits on a <b>4px base</b> (<code class="tok">spacing-base</code>). The named steps '
-            f'multiply it: 4, 8, 12, 16, 24, 32, 40, 64, 96.</p><div class="bar-list">{"".join(bars)}</div>')),
-        ("rhythm", "Rhythm", callout("The three-step rhythm", [
-            "<b>8px</b> between elements inside a group.",
-            "<b>16px</b> between groups.",
-            "<b>32-40px</b> between sections.",
-            "Cards take <b>24px</b> padding - 16px when compact, 32px for hero areas.",
-        ])),
-        ("container", "Container", (
-            '<p>Content centers in a <b>1200px</b> column, with side padding that grows at wider breakpoints. '
-            'Every layout must hold up on both mobile and desktop.</p>')),
-        ("breakpoints", "Breakpoints", tbl(["Token", "Min width"], bp_rows)),
-    ]
-
-
-def sec_elevation():
+def sec_materials():
     tiers = [
-        ("card", "Card", "Raised cards and subtle lifts. Tooltips use this tier too."),
-        ("menu", "Menu", "Popovers, dropdown menus, and other transient surfaces."),
-        ("modal", "Modal", "Modals and dialogs - the deepest shadow in the system."),
+        ("border", "Border", "The default material: a translucent gray-alpha-400 border, no shadow at all."),
+        ("card", "Small", "Raised cards and subtle lifts. Tooltips use this tier too."),
+        ("menu", "Medium", "Popovers, dropdown menus, and other transient surfaces."),
+        ("modal", "Large", "Modals and dialogs - the deepest shadow in the system."),
     ]
     cells = []
     for key, name, desc in tiers:
+        shadow = "none" if key == "border" else f"var(--shadow-{key})"
+        vals = ("" if key == "border" else
+                f'<div class="elev-vals"><span>L {esc(SHADOWS["light"][key])}</span>'
+                f'<span>D {esc(SHADOWS["dark"][key])}</span></div>')
+        tok = "gray-alpha-400" if key == "border" else f"shadow-{key}"
         cells.append(
-            f'<div><div class="elev-card" style="box-shadow:var(--shadow-{key})"></div>'
-            f'<div class="demo-head"><code class="tok">shadow-{key}</code></div>'
-            f'<div class="demo-desc">{esc(desc)}</div>'
-            f'<div class="elev-vals"><span>L {esc(SHADOWS["light"][key])}</span>'
-            f'<span>D {esc(SHADOWS["dark"][key])}</span></div></div>')
+            f'<div><div class="elev-card" style="box-shadow:{shadow}"></div>'
+            f'<div class="demo-head"><b>{esc(name)}</b><code class="tok">{esc(tok)}</code></div>'
+            f'<div class="demo-desc">{esc(desc)}</div>{vals}</div>')
+    lf, df = FOCUS["light"], FOCUS["dark"]
+    focus_demo = demo(
+        '<button class="gbtn gbtn-secondary" type="button" style="box-shadow:var(--focus-ring)">Focused</button>'
+        '<button class="gbtn gbtn-secondary" type="button">Tab to me</button>')
     return [
         ("approach", "Borders first", (
             '<p>Hierarchy comes from borders and tonal surfaces before shadows, so the shadows that remain are '
-            'quiet. The cards below use the live values - flip the theme to compare. Pair each tier with the '
-            'matching radius from <a href="shapes.html">Shapes</a>.</p>')),
-        ("tiers", "Tiers", f'<div class="elev-grid">{"".join(cells)}</div>'),
+            'quiet. Every tier below renders from the live values - flip the theme to compare.</p>')),
+        ("materials", "Materials", f'<div class="elev-grid">{"".join(cells)}</div>'),
+        ("focus", "Focus ring", (
+            '<p>Focus is a two-layer ring: a 2px gap in the surface color, then a 2px blue ring. It shows on '
+            'every interactive element at <code class="tok">:focus-visible</code>.</p>'
+            + focus_demo
+            + callout("Values", [
+                f'Light: <code class="tok">box-shadow: 0 0 0 2px {lf[0]}, 0 0 0 4px {lf[1]}</code> ({lf[2]}).',
+                f'Dark: <code class="tok">box-shadow: 0 0 0 2px {df[0]}, 0 0 0 4px {df[1]}</code> ({df[2]}).',
+            ]))),
     ]
 
 
-def sec_motion():
-    bars = []
-    for name, ms, desc in DURATIONS:
-        fill = (f'<span class="bar-fill" style="width:{max(ms / 300 * 100, 2):.0f}%"></span>'
-                if ms else '<span class="bar-zero">0</span>')
-        bars.append(f'<div class="bar-row"><span class="bar-name"><code class="tok">{name}</code></span>'
-                    f'<span class="bar-val">{ms}ms</span>'
-                    f'<span class="bar-track">{fill}</span>'
-                    f'<span class="bar-desc">{esc(desc)}</span></div>')
-    ez = (f'<div class="ez-row"><div class="ez-meta"><code class="tok">ease</code>'
-          f'<div class="ez-desc">One springy curve for everything that moves - a fast start with a slight '
-          f'overshoot at the end.</div><div class="ez-curve">{copyb(EASING)}</div></div>'
-          f'<div class="ez-track"><span class="ez-dot" style="animation-timing-function:{EASING}"></span></div></div>')
+def sec_brands():
+    band_light = ('<div class="brand-band on-light-band"><span class="brand-mark band-mark" aria-hidden="true">m</span>'
+                  '<span class="band-word">mm-ds</span></div>')
+    band_dark = ('<div class="brand-band on-dark-band"><span class="brand-mark band-mark inverse" aria-hidden="true">m</span>'
+                 '<span class="band-word inverse">mm-ds</span></div>')
     return [
-        ("principles", "Principles", (
-            '<p>Motion exists to clarify a change, never to decorate. Most interactions read best '
-            '<b>instantly - 0ms is a valid duration</b> and often the right one. When something genuinely moves or '
-            'reveals, keep it short and physical.</p>')),
-        ("durations", "Durations", f'<div class="bar-list">{"".join(bars)}</div>'),
-        ("easing", "Easing", ez),
-        ("reduced", "Reduced motion", callout("Always honor the user", [
-            'Respect <code class="tok">prefers-reduced-motion</code>: drop every nonessential animation.',
-            "No loops, no attention-grabbing movement.",
+        ("mm-ds", "mm-ds", (
+            '<p>The mm-ds mark is a lowercase <code class="tok">m</code> on a rounded square in '
+            '<code class="tok">gray-1000</code>, set beside the wordmark in Geist Sans SemiBold. On dark '
+            'surfaces both invert to <code class="tok">background-100</code>.</p>'
+            + band_light + band_dark)),
+        ("spelling", "mm-ds spelling", (
+            '<p>The preferred written format is <b>mm-ds</b>. Always write mm-ds in lowercase, including in '
+            'headings, links, buttons, URLs, and social tags. Do not use MM-DS, Mm-ds, or other capitalized '
+            'variations, and keep the hyphen.</p>')),
+        ("usage", "Usage", callout("Using the mark", [
+            "Keep the rounded-square proportions; never stretch, recolor, or add effects to the mark.",
+            "Give the mark clear space equal to half its width on every side.",
+            "On photos or busy surfaces, prefer the inverse mark on a solid band.",
         ])),
-    ]
-
-
-def sec_shapes():
-    shapes = [
-        ("sm", "Everyday surfaces - buttons, inputs, cards.", ""),
-        ("md", "Menus and modals.", ""),
-        ("lg", "Fullscreen and near-fullscreen surfaces.", ""),
-        ("full", "Pills, avatars, and circular controls.", "pill"),
-    ]
-    cells = []
-    for k, desc, extra in shapes:
-        cells.append(
-            f'<div><div class="demo-box {extra}" style="border-radius:var(--rounded-{k})"></div>'
-            f'<div class="demo-head"><code class="tok">rounded-{k}</code>'
-            f'<span class="demo-val">{esc(RD[k])}</span></div>'
-            f'<div class="demo-desc">{esc(desc)}</div></div>')
-    return [
-        ("radii", "Radii", (
-            '<p>Radii stay tight and consistent.</p>'
-            f'<div class="demo-grid">{"".join(cells)}</div>')),
-        ("rules", "Rules", callout("Keep corners coherent", [
-            "One radius family per view - never mix rounded and sharp corners.",
-            "Bigger surface, bigger radius: 6px controls, 12px menus and modals, 16px fullscreen.",
-            '<code class="tok">rounded-full</code> is reserved for pills, avatars, and circles.',
-        ])),
-    ]
-
-
-def comp_spec_table(names):
-    heads = ["Token", "Background", "Text", "Type", "Radius", "Padding", "Height"]
-    rows = []
-    for n in names:
-        c = CO[n]
-        rows.append(
-            f'<tr><td class="mono"><code class="tok">{esc(n)}</code></td>'
-            f'<td class="mono">{esc(c.get("backgroundColor", "transparent"))}</td>'
-            f'<td class="mono">{esc(c.get("textColor", "-"))}</td>'
-            f'<td class="mono">{esc(c.get("typography", "-"))}</td>'
-            f'<td class="mono">{esc(c.get("rounded", "-"))}</td>'
-            f'<td class="mono">{esc(c.get("padding", "-"))}</td>'
-            f'<td class="mono">{esc(c.get("height", "-"))}</td></tr>')
-    return tbl(heads, rows)
-
-
-def sec_components():
-    buttons_demo = (
-        '<div class="demo-panel">'
-        '<button class="gbtn gbtn-primary" type="button">Deploy Project</button>'
-        '<button class="gbtn gbtn-secondary" type="button">View Logs</button>'
-        '<button class="gbtn gbtn-tertiary" type="button">Cancel</button>'
-        '<button class="gbtn gbtn-error" type="button">Delete Member</button>'
-        '</div>')
-    sizes_demo = (
-        '<div class="demo-panel">'
-        '<button class="gbtn gbtn-primary gbtn-sm" type="button">Small · 32px</button>'
-        '<button class="gbtn gbtn-primary" type="button">Medium · 40px</button>'
-        '<button class="gbtn gbtn-primary gbtn-lg" type="button">Large · 48px</button>'
-        '</div>')
-    disabled_demo = (
-        '<div class="demo-panel">'
-        '<button class="gbtn" type="button" disabled>Disabled</button>'
-        '<button class="gbtn gbtn-secondary" type="button">Tab here to see the focus ring</button>'
-        '</div>')
-    inputs_demo = (
-        '<div class="demo-panel">'
-        '<input class="ginput ginput-sm" type="text" placeholder="Small · 32px" aria-label="Small input">'
-        '<input class="ginput" type="text" placeholder="Medium · 40px" aria-label="Medium input">'
-        '<input class="ginput ginput-lg" type="text" placeholder="Large · 48px" aria-label="Large input">'
-        '</div>')
-    lf, df = FOCUS["light"], FOCUS["dark"]
-    states = (
-        '<p>States move along the color scale instead of inventing new values: a <code class="tok">100</code> '
-        'fill becomes <code class="tok">200</code> on hover and <code class="tok">300</code> on active; borders '
-        'step <code class="tok">400</code> to <code class="tok">500</code> to <code class="tok">600</code>. '
-        'Solid fills step one up on hover.</p>'
-        + callout("Disabled and focus", [
-            'Disabled: <code class="tok">gray-100</code> fill, <code class="tok">gray-700</code> text, '
-            '<code class="tok">gray-400</code> border, <code class="tok">not-allowed</code> cursor.',
-            'Focus is a two-layer ring: a 2px gap in the surface color, then a 2px blue ring. Light: '
-            f'<code class="tok">box-shadow: 0 0 0 2px {lf[0]}, 0 0 0 4px {lf[1]}</code> ({lf[2]}).',
-            f'Dark: <code class="tok">box-shadow: 0 0 0 2px {df[0]}, 0 0 0 4px {df[1]}</code> ({df[2]}).',
-            'Every interactive element shows the ring at <code class="tok">:focus-visible</code>.',
-        ]))
-    return [
-        ("buttons", "Buttons", (
-            '<p>Four variants, all live below and specified entirely by tokens. Primary is for the single most '
-            'important action on a view; secondary is the default; tertiary is low-emphasis; error is for '
-            'destructive actions only.</p>'
-            + buttons_demo + comp_spec_table(["button-primary", "button-secondary", "button-tertiary", "button-error"])
-            + '<h3 id="button-sizes">Sizes</h3>'
-            + sizes_demo + comp_spec_table(["button-small", "button-large"]))),
-        ("inputs", "Inputs", (
-            '<p>Text fields share the button height scale and radius.</p>'
-            + inputs_demo + comp_spec_table(["input", "input-small", "input-large"]))),
-        ("states", "States", states + disabled_demo),
-    ]
-
-
-def sec_voice():
-    return [
-        ("principles", "Principles", (
-            '<p>Copy is part of the design. Keep it precise, verb-first, and free of filler - the interface '
-            'should read the way it works.</p>')),
-        ("rules", "Rules", callout("Writing interface copy", [
-            "<b>Case.</b> Title Case for buttons, labels, titles, and tabs; sentence case for body, helper "
-            "text, and toasts.",
-            '<b>Actions.</b> Pair a verb with an object - <code class="tok">Deploy Project</code>, '
-            '<code class="tok">Delete Member</code> - never a bare <code class="tok">OK</code> or '
-            '<code class="tok">Confirm</code>.',
-            "<b>Errors.</b> Say what happened, then what to do next.",
-            "<b>Toasts.</b> Name the thing that changed, drop the trailing period, and never write "
-            '<code class="tok">successfully</code>.',
-            "<b>Empty states.</b> Point at the first action the user should take.",
-            '<b>Progress.</b> Present participle plus an ellipsis: <code class="tok">Deploying…</code>, '
-            '<code class="tok">Saving…</code>.',
-            "<b>Mechanics.</b> Numerals for counts, curly quotes, a real ellipsis character; skip "
-            '<code class="tok">please</code> and marketing superlatives.',
-        ])),
-    ]
-
-
-def sec_guidelines():
-    return [
-        ("do", "Do", callout("Always", [
-            'Rank information with the gray scale: <code class="tok">1000</code> primary text, '
-            '<code class="tok">900</code> secondary, <code class="tok">700</code> disabled.',
-            "Reserve solid accent color for state and the single most important action on a view.",
-            "Hold WCAG AA contrast - 4.5:1 for body text.",
-            'Show the focus ring on every interactive element at <code class="tok">:focus-visible</code>; '
-            "never remove an outline without a visible replacement.",
-            "Apply typography tokens instead of hand-setting size, weight, or line height.",
-        ], "accent")),
-        ("dont", "Don't", callout("Never", [
-            "Signal state with color alone - pair it with an icon or a text label.",
-            'Use <code class="tok">background-200</code> as a general fill; it exists for subtle separation only.',
-            "Mix rounded and sharp corners, or more than two font weights, in one view.",
-            'Swap <code class="tok">gray-*</code> for <code class="tok">background-*</code>; they are '
-            "separate scales.",
-        ], "danger")),
     ]
 
 
@@ -512,7 +346,8 @@ def sec_ai():
         '<p>Dark theme. Same token names, dark values.</p></a></div>')
     how = (
         '<p>Point an agent at either file and it has the entire system - no scraping, no screenshots. '
-        'The two themes share names, so code can switch themes by swapping values only.</p>'
+        'The two themes share names, so code can switch themes by swapping values only. Layout, shapes, '
+        'motion, voice, and the do\'s and don\'ts are documented there too.</p>'
         '<pre class="code"><span class="c"># stable URLs</span>\n'
         f'{PAGES_URL}/design.md\n'
         f'{PAGES_URL}/design.dark.md\n\n'
@@ -535,9 +370,367 @@ def sec_ai():
     ]
 
 
+# ---- components -------------------------------------------------------------------
+def comp_spec_table(names):
+    heads = ["Token", "Background", "Text", "Type", "Radius", "Padding", "Height"]
+    rows = []
+    for n in names:
+        c = CO[n]
+        rows.append(
+            f'<tr><td class="mono"><code class="tok">{esc(n)}</code></td>'
+            f'<td class="mono">{esc(c.get("backgroundColor", "transparent"))}</td>'
+            f'<td class="mono">{esc(c.get("textColor", "-"))}</td>'
+            f'<td class="mono">{esc(c.get("typography", "-"))}</td>'
+            f'<td class="mono">{esc(c.get("rounded", "-"))}</td>'
+            f'<td class="mono">{esc(c.get("padding", "-"))}</td>'
+            f'<td class="mono">{esc(c.get("height", "-"))}</td></tr>')
+    return tbl(heads, rows)
+
+
+def c_avatar():
+    sizes = "".join(f'<span class="gavatar sz-{s}">mm</span>' for s in (20, 24, 32, 48))
+    group = ('<span class="gavatar-group">' + "".join(
+        f'<span class="gavatar sz-32">{t}</span>' for t in ("mm", "ds", "ai", "+3")) + "</span>")
+    return [
+        ("sizes", "Sizes", (
+            '<p>Avatars are circles on <code class="tok">gray-100</code> with a '
+            '<code class="tok">gray-alpha-400</code> border, at 20, 24, 32, and 48px.</p>' + demo(sizes))),
+        ("group", "Avatar group", (
+            '<p>Groups overlap by 8px with a 2px <code class="tok">background-100</code> keyline.</p>'
+            + demo(group))),
+    ]
+
+
+def c_badge():
+    def solid(scale):
+        return (f'<span class="gbadge" style="background:{var_c(scale + "-700")};color:#ffffff">'
+                f'{esc(scale)}</span>')
+    def subtle(scale):
+        return (f'<span class="gbadge" style="background:{var_c(scale + "-100")};'
+                f'color:{var_c(scale + "-900")}">{esc(scale)}</span>')
+    gray_solid = f'<span class="gbadge" style="background:{var_c("gray-1000")};color:{var_c("background-100")}">gray</span>'
+    gray_subtle = f'<span class="gbadge" style="background:{var_c("gray-100")};color:{var_c("gray-900")}">gray</span>'
+    sizes = (f'<span class="gbadge sz-sm" style="background:{var_c("gray-1000")};color:{var_c("background-100")}">Small</span>'
+             f'<span class="gbadge" style="background:{var_c("gray-1000")};color:{var_c("background-100")}">Medium</span>'
+             f'<span class="gbadge sz-lg" style="background:{var_c("gray-1000")};color:{var_c("background-100")}">Large</span>')
+    return [
+        ("variants", "Variants", (
+            '<p>Solid badges use the <code class="tok">700</code> step with white text; subtle badges pair '
+            '<code class="tok">100</code> backgrounds with <code class="tok">900</code> text.</p>'
+            + demo(gray_solid + "".join(solid(a) for a in ACCENTS))
+            + demo(gray_subtle + "".join(subtle(a) for a in ACCENTS)))),
+        ("sizes", "Sizes", demo(sizes)),
+    ]
+
+
+def c_banner():
+    def banner(scale, label, action):
+        return (f'<div class="gbanner" style="background:{var_c(scale + "-100")};'
+                f'border-color:{var_c(scale + "-400")}">'
+                f'<span style="color:{var_c(scale + "-900")}">{esc(label)}</span>'
+                f'<a class="gbanner-action" href="#variants" style="color:{var_c(scale + "-900")}">{esc(action)}</a></div>')
+    return [
+        ("variants", "Variants", (
+            '<p>Banners stretch across their container on the <code class="tok">100</code> background with a '
+            '<code class="tok">400</code> border and <code class="tok">900</code> text of their scale.</p>'
+            + demo(banner("blue", "A new version is available.", "Upgrade") +
+                   banner("green", "Domain verified.", "View") +
+                   banner("amber", "Your trial ends in 3 days.", "Add Billing") +
+                   banner("red", "Build failed. Bundle exceeds 50 MB.", "View Logs"), "col"))),
+    ]
+
+
+def c_button():
+    buttons = ('<button class="gbtn gbtn-primary" type="button">Deploy Project</button>'
+               '<button class="gbtn gbtn-secondary" type="button">View Logs</button>'
+               '<button class="gbtn gbtn-tertiary" type="button">Cancel</button>'
+               '<button class="gbtn gbtn-error" type="button">Delete Member</button>')
+    sizes = ('<button class="gbtn gbtn-primary gbtn-sm" type="button">Small · 32px</button>'
+             '<button class="gbtn gbtn-primary" type="button">Medium · 40px</button>'
+             '<button class="gbtn gbtn-primary gbtn-lg" type="button">Large · 48px</button>')
+    states = ('<button class="gbtn" type="button" disabled>Disabled</button>'
+              '<button class="gbtn gbtn-secondary" type="button" style="box-shadow:var(--focus-ring)">Focused</button>')
+    return [
+        ("variants", "Variants", (
+            '<p>Primary is for the single most important action on a view; secondary is the default; tertiary '
+            'is low-emphasis; error is for destructive actions only.</p>'
+            + demo(buttons)
+            + comp_spec_table(["button-primary", "button-secondary", "button-tertiary", "button-error"]))),
+        ("sizes", "Sizes", demo(sizes) + comp_spec_table(["button-small", "button-large"])),
+        ("states", "States", (
+            '<p>Fills step <code class="tok">100</code> to <code class="tok">200</code> on hover and '
+            '<code class="tok">300</code> on active; borders step <code class="tok">400</code> to '
+            '<code class="tok">500</code> to <code class="tok">600</code>. Disabled uses a '
+            '<code class="tok">gray-100</code> fill and <code class="tok">gray-700</code> text.</p>'
+            + demo(states))),
+    ]
+
+
+def c_checkbox():
+    boxes = ('<label class="gcheck"><input type="checkbox" checked><span>Enabled</span></label>'
+             '<label class="gcheck"><input type="checkbox"><span>Unchecked</span></label>'
+             '<label class="gcheck"><input type="checkbox" disabled><span>Disabled</span></label>'
+             '<label class="gcheck"><input type="checkbox" checked disabled><span>Checked disabled</span></label>')
+    return [
+        ("states", "States", (
+            '<p>A 16px control with <code class="tok">rounded</code> 4px corners and a '
+            '<code class="tok">gray-alpha-500</code> border; checked fills with '
+            '<code class="tok">gray-1000</code>.</p>' + demo(boxes))),
+    ]
+
+
+def c_code_block():
+    block = ('<pre class="code" style="width:100%;margin-top:0"><span class="c"># deploy from the CLI</span>\n'
+             'npx vercel deploy --prod\n'
+             '<span class="c"># or roll back</span>\n'
+             'npx vercel rollback</pre>')
+    inline = ('<p style="margin:0">Press <code class="tok">⌘K</code> to search, or run '
+              '<code class="tok">build.py</code> to regenerate this site.</p>')
+    return [
+        ("block", "Code block", (
+            '<p>Blocks sit on <code class="tok">background-200</code> with a hairline border, 12px radius, and '
+            '<code class="tok">copy-13-mono</code> text. Comments use <code class="tok">gray-900</code>.</p>'
+            + demo(block, "col"))),
+        ("inline", "Inline code", demo(inline)),
+    ]
+
+
+def c_empty_state():
+    inner = ('<div class="gempty"><h4>No deployments yet</h4>'
+             '<p>Push to your Git repository to create one.</p>'
+             '<button class="gbtn gbtn-primary" type="button">Import Project</button></div>')
+    return [
+        ("default", "Empty state", (
+            '<p>Empty states point at the first action. A dashed <code class="tok">gray-alpha-500</code> '
+            'border keeps the region visible without weight.</p>' + demo(inner, "col"))),
+    ]
+
+
+def c_input():
+    sizes = ('<input class="ginput ginput-sm" type="text" placeholder="Small · 32px" aria-label="Small input">'
+             '<input class="ginput" type="text" placeholder="Medium · 40px" aria-label="Medium input">'
+             '<input class="ginput ginput-lg" type="text" placeholder="Large · 48px" aria-label="Large input">')
+    field = ('<div class="gfield"><label for="demo-email">Email</label>'
+             '<input class="ginput" id="demo-email" type="email" placeholder="you@example.com"></div>'
+             '<div class="gfield"><label for="demo-err">Username</label>'
+             '<input class="ginput error" id="demo-err" type="text" value="mm ds">'
+             '<span class="err">Usernames cannot contain spaces.</span></div>')
+    disabled = '<input class="ginput" type="text" placeholder="Disabled" disabled aria-label="Disabled input">'
+    return [
+        ("sizes", "Sizes", (
+            '<p>Inputs share the button height scale and radius, on a translucent '
+            '<code class="tok">gray-alpha-400</code> border.</p>'
+            + demo(sizes) + comp_spec_table(["input", "input-small", "input-large"]))),
+        ("label-error", "Label and error", (
+            '<p>Errors switch the border to <code class="tok">red-700</code> and explain what to fix in '
+            '<code class="tok">red-900</code>.</p>' + demo(field))),
+        ("disabled", "Disabled", demo(disabled)),
+    ]
+
+
+def c_kbd():
+    combos = ('<span><kbd class="key">⌘</kbd> <kbd class="key">K</kbd></span>'
+              '<span><kbd class="key">⇧</kbd> <kbd class="key">⏎</kbd></span>'
+              '<span><kbd class="key">esc</kbd></span>'
+              '<span><kbd class="key">↑</kbd> <kbd class="key">↓</kbd></span>')
+    return [
+        ("default", "Keyboard input", (
+            '<p>Keys render in <code class="tok">label-12</code> on <code class="tok">background-200</code> '
+            'with a hairline border, one key per cap.</p>' + demo(combos))),
+    ]
+
+
+def c_note():
+    def note(scale, label):
+        return (f'<div class="gnote" style="background:{var_c(scale + "-100")};'
+                f'border-color:{var_c(scale + "-400")};color:{var_c(scale + "-900")}">{esc(label)}</div>')
+    plain = (f'<div class="gnote" style="background:{var_c("background-100")};'
+             f'border-color:{var_c("gray-alpha-400")};color:{var_c("gray-900")}">'
+             'This deployment is public.</div>')
+    return [
+        ("variants", "Variants", (
+            '<p>Notes are compact inline messages: <code class="tok">100</code> background, '
+            '<code class="tok">400</code> border, <code class="tok">900</code> text of their scale.</p>'
+            + demo(plain +
+                   note("blue", "A newer deployment exists.") +
+                   note("green", "Checks passed.") +
+                   note("amber", "Certificate renews in 7 days.") +
+                   note("red", "This action cannot be undone."), "col"))),
+    ]
+
+
+def c_pagination():
+    pager = ('<nav class="gpager" aria-label="Pagination demo">'
+             '<button type="button" disabled>Prev</button>'
+             '<button type="button" aria-current="page">1</button>'
+             '<button type="button">2</button>'
+             '<button type="button">3</button>'
+             '<span class="gpager-ellipsis">…</span>'
+             '<button type="button">12</button>'
+             '<button type="button">Next</button></nav>')
+    return [
+        ("default", "Pagination", (
+            '<p>The current page takes the solid <code class="tok">gray-1000</code> fill; other pages are '
+            'tertiary buttons that tint with <code class="tok">gray-alpha-200</code> on hover.</p>'
+            + demo(pager))),
+    ]
+
+
+def c_progress():
+    bars = (f'<div class="gfield" style="width:100%;max-width:320px"><label>Default · 60%</label>'
+            f'<div class="gprogress"><span style="width:60%"></span></div></div>'
+            f'<div class="gfield" style="width:100%;max-width:320px"><label>Success · 100%</label>'
+            f'<div class="gprogress"><span style="width:100%;background:{var_c("green-700")}"></span></div></div>'
+            f'<div class="gfield" style="width:100%;max-width:320px"><label>Error · 35%</label>'
+            f'<div class="gprogress"><span style="width:35%;background:{var_c("red-700")}"></span></div></div>')
+    return [
+        ("default", "Progress", (
+            '<p>An 8px track on <code class="tok">gray-alpha-200</code>; the fill is '
+            '<code class="tok">gray-1000</code> by default and may take a status color.</p>'
+            + demo(bars, "col"))),
+    ]
+
+
+def c_radio():
+    radios = ('<label class="gradio"><input type="radio" name="rd" checked><span>Hobby</span></label>'
+              '<label class="gradio"><input type="radio" name="rd"><span>Pro</span></label>'
+              '<label class="gradio"><input type="radio" name="rd" disabled><span>Enterprise (disabled)</span></label>')
+    return [
+        ("states", "States", (
+            '<p>A 16px circular control; checked shows a <code class="tok">gray-1000</code> ring with an '
+            'inner dot.</p>' + demo(radios))),
+    ]
+
+
+def c_select():
+    selects = ('<select class="gselect gselect-sm" aria-label="Small select"><option>Small</option><option>Option</option></select>'
+               '<select class="gselect" aria-label="Medium select"><option>Medium</option><option>Option</option></select>'
+               '<select class="gselect gselect-lg" aria-label="Large select"><option>Large</option><option>Option</option></select>'
+               '<select class="gselect" disabled aria-label="Disabled select"><option>Disabled</option></select>')
+    return [
+        ("sizes", "Sizes", (
+            '<p>Selects share the input recipe plus a chevron affordance; heights are 32, 40, and 48px.</p>'
+            + demo(selects))),
+    ]
+
+
+def c_skeleton():
+    sk = ('<div style="display:flex;gap:12px;align-items:center;width:100%;max-width:360px">'
+          '<span class="gskeleton" style="width:40px;height:40px;border-radius:9999px;flex:0 0 auto"></span>'
+          '<span style="flex:1;display:flex;flex-direction:column;gap:8px">'
+          '<span class="gskeleton" style="height:12px;width:70%"></span>'
+          '<span class="gskeleton" style="height:12px;width:45%"></span></span></div>'
+          '<span class="gskeleton" style="height:96px;width:100%;max-width:360px;border-radius:var(--rounded-md)"></span>')
+    return [
+        ("default", "Skeleton", (
+            '<p>Loading placeholders shimmer between <code class="tok">gray-100</code> and '
+            '<code class="tok">gray-200</code>, and freeze under '
+            '<code class="tok">prefers-reduced-motion</code>.</p>' + demo(sk, "col"))),
+    ]
+
+
+def c_spinner():
+    def spinner(px):
+        bars = "".join(
+            f'<span style="transform:rotate({i * 30}deg) translate(0,-130%);animation-delay:{-1.2 + i * 0.1:.1f}s"></span>'
+            for i in range(12))
+        return f'<span class="gspinner" style="width:{px}px;height:{px}px">{bars}</span>'
+    return [
+        ("sizes", "Sizes", (
+            '<p>Twelve <code class="tok">gray-800</code> bars fading in sequence, at 16, 24, and 32px. The '
+            'animation stops under <code class="tok">prefers-reduced-motion</code>.</p>'
+            + demo(spinner(16) + spinner(24) + spinner(32)))),
+    ]
+
+
+def c_switch():
+    switches = ('<label class="gswitch"><input type="checkbox" checked><span>Notifications</span></label>'
+                '<label class="gswitch"><input type="checkbox"><span>Off</span></label>'
+                '<label class="gswitch"><input type="checkbox" disabled><span>Disabled</span></label>')
+    return [
+        ("states", "States", (
+            '<p>The track rests on <code class="tok">gray-alpha-300</code> and fills with '
+            '<code class="tok">blue-700</code> when on; the knob carries the small shadow tier.</p>'
+            + demo(switches))),
+    ]
+
+
+def c_table():
+    rows = [
+        ("mm-ds", "Ready", "Production", "2m ago"),
+        ("docs", "Ready", "Preview", "1h ago"),
+        ("api", "Building", "Preview", "just now"),
+        ("marketing", "Error", "Production", "3d ago"),
+    ]
+    color = {"Ready": "green-900", "Building": "amber-900", "Error": "red-900"}
+    body = "".join(
+        f'<tr><td class="mono">{esc(p)}</td>'
+        f'<td><span style="color:{var_c(color[s])}">{esc(s)}</span></td>'
+        f'<td>{esc(e)}</td><td class="mono">{esc(t)}</td></tr>'
+        for p, s, e, t in rows)
+    table = (f'<div class="tbl-wrap" style="margin-top:0;width:100%"><table class="tbl">'
+             f'<thead><tr><th>Project</th><th>Status</th><th>Environment</th><th>Updated</th></tr></thead>'
+             f'<tbody>{body}</tbody></table></div>')
+    return [
+        ("default", "Table", (
+            '<p>Tables live inside a bordered, rounded container: <code class="tok">label-12</code> headers on '
+            '<code class="tok">gray-100</code>, hairline row dividers, <code class="tok">label-14</code> cells. '
+            'Status text pairs a <code class="tok">900</code>-step color with a label, never color alone.</p>'
+            + demo(table, "col"))),
+    ]
+
+
+def c_textarea():
+    ta = ('<textarea class="gtextarea" placeholder="Add a deployment note…" aria-label="Deployment note"></textarea>'
+          '<textarea class="gtextarea" disabled placeholder="Disabled" aria-label="Disabled textarea"></textarea>')
+    return [
+        ("default", "Textarea", (
+            '<p>The input recipe with a comfortable multi-line height; resizes vertically only.</p>'
+            + demo(ta, "col"))),
+    ]
+
+
+def c_tooltip():
+    tip = ('<span class="gtip-wrap"><button class="gbtn gbtn-secondary" type="button">Static</button>'
+           '<span class="gtip" role="tooltip">Copied to clipboard</span></span>'
+           '<span class="gtip-wrap gtip-hover"><button class="gbtn gbtn-secondary" type="button">Hover me</button>'
+           '<span class="gtip" role="tooltip">Deploys to production</span></span>')
+    return [
+        ("default", "Tooltip", (
+            '<p>Tooltips invert the surface: <code class="tok">gray-1000</code> background, '
+            '<code class="tok">background-100</code> text, 6px radius, and the small shadow tier. They take '
+            'the lightest elevation and never hold critical information.</p>'
+            + demo(tip, "tall"))),
+    ]
+
+
+COMPONENT_PAGES = [
+    {"file": "avatar.html", "title": "Avatar", "lead": "People and teams as circles - sized, bordered, and groupable.", "sections": c_avatar},
+    {"file": "badge.html", "title": "Badge", "lead": "Small status labels in solid and subtle variants across every accent scale.", "sections": c_badge},
+    {"file": "banner.html", "title": "Banner", "lead": "Full-width messages for page-level state: info, success, warning, error.", "sections": c_banner},
+    {"file": "button.html", "title": "Button", "lead": "Four variants and three sizes, specified entirely by tokens.", "sections": c_button},
+    {"file": "checkbox.html", "title": "Checkbox", "lead": "A 16px control that fills with gray-1000 when checked.", "sections": c_checkbox},
+    {"file": "code-block.html", "title": "Code Block", "lead": "Blocks and inline code set in Geist Mono on a quiet surface.", "sections": c_code_block},
+    {"file": "empty-state.html", "title": "Empty State", "lead": "A bordered region that points at the first action to take.", "sections": c_empty_state},
+    {"file": "input.html", "title": "Input", "lead": "Text fields on translucent borders, with label, error, and disabled states.", "sections": c_input},
+    {"file": "kbd.html", "title": "Keyboard Input", "lead": "Key caps for shortcuts and command hints.", "sections": c_kbd},
+    {"file": "note.html", "title": "Note", "lead": "Compact inline messages on the 100/400/900 recipe of each scale.", "sections": c_note},
+    {"file": "pagination.html", "title": "Pagination", "lead": "Page controls with a solid current page and tertiary neighbors.", "sections": c_pagination},
+    {"file": "progress.html", "title": "Progress", "lead": "A quiet 8px track with a token-colored fill.", "sections": c_progress},
+    {"file": "radio.html", "title": "Radio", "lead": "Single-choice circles with a gray-1000 ring when selected.", "sections": c_radio},
+    {"file": "select.html", "title": "Select", "lead": "The input recipe with a chevron, in three heights.", "sections": c_select},
+    {"file": "skeleton.html", "title": "Skeleton", "lead": "Shimmering placeholders that respect reduced motion.", "sections": c_skeleton},
+    {"file": "spinner.html", "title": "Spinner", "lead": "Twelve fading bars in three sizes.", "sections": c_spinner},
+    {"file": "switch.html", "title": "Switch", "lead": "An on/off toggle that fills with blue-700.", "sections": c_switch},
+    {"file": "table.html", "title": "Table", "lead": "Bordered, rounded data tables with hairline dividers.", "sections": c_table},
+    {"file": "textarea.html", "title": "Textarea", "lead": "Multi-line input on the same recipe as text fields.", "sections": c_textarea},
+    {"file": "tooltip.html", "title": "Tooltip", "lead": "Inverted, shadowed hints that never hold critical information.", "sections": c_tooltip},
+]
+
+
 # ---- pages ----------------------------------------------------------------------
 PAGES = [
-    {"file": "index.html", "title": "Introduction", "h1": "mm-ds", "group": "Getting started",
+    {"file": "index.html", "title": "Introduction", "h1": "mm-ds", "group": "Foundations",
      "lead": "A Geist-based design system for mm products: minimal, high-contrast, light and dark. "
              "Token-for-token aligned with Vercel's public Geist reference, and readable by people and AI "
              "agents alike.",
@@ -554,36 +747,19 @@ PAGES = [
              "value ships as a token.",
      "desc": "mm-ds typography - heading, label, copy, and button tokens in Geist Sans and Geist Mono.",
      "sections": sec_typography},
-    {"file": "layout.html", "title": "Layout", "group": "Foundations",
-     "lead": "A 4px spacing scale, a three-step rhythm, a 1200px content column, and five breakpoints.",
-     "desc": "mm-ds layout - the 4px spacing scale, rhythm rules, container width, and breakpoints.",
-     "sections": sec_layout},
-    {"file": "elevation.html", "title": "Elevation", "group": "Foundations",
-     "lead": "Depth comes from borders and tonal surfaces first. Three quiet shadow tiers cover cards, menus, "
-             "and modals.",
-     "desc": "mm-ds elevation - three box-shadow tiers for cards, menus, and modals in light and dark.",
-     "sections": sec_elevation},
-    {"file": "motion.html", "title": "Motion", "group": "Foundations",
-     "lead": "Instant by default. When motion earns its place, it is short, physical, and rides a single curve.",
-     "desc": "mm-ds motion - durations and the one easing curve, with reduced-motion rules.",
-     "sections": sec_motion},
-    {"file": "shapes.html", "title": "Shapes", "group": "Foundations",
-     "lead": "Tight radii - 6, 12, 16, and full - matched to surface size, one family per view.",
-     "desc": "mm-ds shapes - the four radius tokens and the rules for applying them.",
-     "sections": sec_shapes},
-    {"file": "components.html", "title": "Components", "group": "Patterns",
-     "lead": "Buttons and inputs as token recipes: variants, sizes, and states - all rendered live from the "
-             "same variables this site ships.",
-     "desc": "mm-ds components - button and input recipes with sizes, states, and the focus ring.",
-     "sections": sec_components},
-    {"file": "voice.html", "title": "Voice & content", "group": "Patterns",
-     "lead": "Interface copy is part of the design: precise, verb-first, and free of filler.",
-     "desc": "mm-ds voice and content - the writing rules for interface copy.",
-     "sections": sec_voice},
-    {"file": "guidelines.html", "title": "Do's & don'ts", "group": "Patterns",
-     "lead": "The short list that keeps every surface consistent, accessible, and unmistakably on-system.",
-     "desc": "mm-ds do's and don'ts - the rules that keep surfaces consistent and accessible.",
-     "sections": sec_guidelines},
+    {"file": "materials.html", "title": "Materials", "group": "Foundations",
+     "lead": "Depth without noise: a border-first material, three quiet shadow tiers, and the two-layer focus ring.",
+     "desc": "mm-ds materials - border, small, medium, and large shadow tiers plus the focus ring, in light and dark.",
+     "sections": sec_materials},
+    {"file": "brands.html", "title": "mm-ds", "group": "Brands",
+     "lead": "How to use the mm-ds mark and wordmark, and how to write the name.",
+     "desc": "mm-ds brand - the mark, the wordmark, spelling, and usage rules.",
+     "sections": sec_brands},
+] + [
+    {"file": p["file"], "title": p["title"], "group": "Components", "lead": p["lead"],
+     "desc": f'mm-ds {p["title"]} - token-driven component demos and states.', "sections": p["sections"]}
+    for p in COMPONENT_PAGES
+] + [
     {"file": "ai.html", "title": "AI & agents", "group": "Reference",
      "lead": "The whole system ships as two markdown files an agent can read in one pass - one per theme, "
              "same token names.",
@@ -592,11 +768,10 @@ PAGES = [
 ]
 
 NAV = [
-    ("Getting started", [("index.html", "Introduction")]),
-    ("Foundations", [("colors.html", "Colors"), ("typography.html", "Typography"), ("layout.html", "Layout"),
-                     ("elevation.html", "Elevation"), ("motion.html", "Motion"), ("shapes.html", "Shapes")]),
-    ("Patterns", [("components.html", "Components"), ("voice.html", "Voice & content"),
-                  ("guidelines.html", "Do's & don'ts")]),
+    ("Foundations", [("index.html", "Introduction"), ("colors.html", "Colors"),
+                     ("typography.html", "Typography"), ("materials.html", "Materials")]),
+    ("Brands", [("brands.html", "mm-ds")]),
+    ("Components", [(p["file"], p["title"]) for p in COMPONENT_PAGES]),
     ("Reference", [("ai.html", "AI & agents"), ("design.md", "design.md"), ("design.dark.md", "design.dark.md")]),
 ]
 
@@ -615,8 +790,9 @@ def nav_html(active):
         for href, label in items:
             cur = ' aria-current="page"' if href == active else ""
             ext = EXT_SVG if href.endswith(".md") else ""
-            out.append(f'<a href="{href}"{cur}>{esc(label)}{ext}</a>')
-    return "\n      ".join(out)
+            mark = '<span class="nav-mark" aria-hidden="true">m</span>' if href == "brands.html" else ""
+            out.append(f'<a href="{href}"{cur}>{mark}{esc(label)}{ext}</a>')
+    return "\n        ".join(out)
 
 
 def page_html(page, prev_pg, next_pg):
@@ -663,7 +839,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     <div class="head-main">
       <button id="navBtn" class="navbtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="searchbtn" type="button" data-search-open>
-        {SEARCH_SVG}<span class="grow">Search…</span><kbd>⌘K</kbd>
+        {SEARCH_SVG}<span class="grow">Search mm-ds</span><kbd>⌘K</kbd>
       </button>
       <span class="head-spacer"></span>
       <div class="theme-switch" role="group" aria-label="Color theme">
@@ -682,7 +858,6 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     <div class="backdrop" id="navBackdrop"></div>
     <main class="main" id="content">
       <article class="doc">
-        <p class="eyebrow">{esc(page["group"])}</p>
         <h1>{esc(h1)}</h1>
         <p class="lead">{esc(page["lead"])}</p>
         {nl.join(body)}
@@ -806,7 +981,7 @@ def tokens_css():
 def search_index():
     ix = []
     for p in PAGES:
-        ix.append({"t": p["title"], "k": "Page", "p": p["file"], "v": ""})
+        ix.append({"t": p["title"] if p["group"] != "Brands" else "Brands", "k": "Page", "p": p["file"], "v": ""})
 
     def anchor(name):
         if name.startswith("background"):
@@ -827,18 +1002,11 @@ def search_index():
     for name, t in TY.items():
         ix.append({"t": name, "k": "Typography", "p": "typography.html#all",
                    "v": f"{t['fontSize'][:-2]}/{t['lineHeight'][:-2]} · {t['fontWeight']}"})
-    for k, v in SP.items():
-        ix.append({"t": f"spacing-{k}", "k": "Spacing", "p": "layout.html#spacing", "v": v})
-    for n, v in BREAKPOINTS:
-        ix.append({"t": f"breakpoint-{n}", "k": "Layout", "p": "layout.html#breakpoints", "v": v})
-    for k, v in RD.items():
-        ix.append({"t": f"rounded-{k}", "k": "Shapes", "p": "shapes.html#radii", "v": v})
     for k in SHADOWS["light"]:
-        ix.append({"t": f"shadow-{k}", "k": "Elevation", "p": "elevation.html#tiers", "v": ""})
+        ix.append({"t": f"shadow-{k}", "k": "Materials", "p": "materials.html#materials", "v": ""})
     for name, c in CO.items():
-        ix.append({"t": name, "k": "Component",
-                   "p": "components.html#buttons" if "button" in name else "components.html#inputs",
-                   "v": f"h {c.get('height', '')}"})
+        target = "button.html#variants" if name.startswith("button") else "input.html#sizes"
+        ix.append({"t": name, "k": "Component", "p": target, "v": f"h {c.get('height', '')}"})
     return "window.__DS_INDEX=" + json.dumps(ix, ensure_ascii=False, separators=(",", ":")) + ";"
 
 

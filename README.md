@@ -12,7 +12,7 @@ Token values follow Vercel's public Geist reference, published at [vercel.com/de
 |---|---|
 | `tokens/geist.light.yaml` | **Source of truth, light theme.** Colors (scales, alpha, P3 variants), typography, spacing, rounded, component recipes |
 | `tokens/geist.dark.yaml` | Source of truth, dark theme - same token names, dark values |
-| `*.html` (11 pages) | The docs site - sidebar navigation, per-foundation pages, Cmd+K token search, light/dark/system theme |
+| `*.html` (26 pages) | The docs site, mirroring the Geist IA: Foundations (Introduction, Colors, Typography, Materials), Brands, one page per component (Avatar ... Tooltip), and Reference. Cmd+K token search, light/dark/system theme |
 | `design.md` | Machine-readable spec, **light** theme - YAML frontmatter with every token value, then the rules in prose. Point AI agents here |
 | `design.dark.md` | Same spec, **dark** theme values |
 | `assets/tokens.css` | Every token as CSS custom properties (`:root` = light, `[data-theme="dark"]` = dark, P3 overrides via `@media (color-gamut: p3)`) |
