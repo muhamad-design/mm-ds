@@ -107,7 +107,7 @@
   --bg-accent-subtle: var(--c-blue-100);
   --text-primary: var(--c-gray-1000);
   --text-secondary: var(--c-gray-900);
-  --text-tertiary: var(--c-gray-700);
+  --text-tertiary: var(--c-gray-900);
   --text-accent: var(--c-blue-900);
   --text-success: var(--c-green-800);
   --border-primary: var(--c-gray-alpha-500);
@@ -239,9 +239,9 @@
   --c-pink-900: #ff4d8d;
   --c-pink-1000: #ffe9f4;
   --bg-1: var(--c-background-100);
-  --bg-2: var(--c-background-200);
+  --bg-2: var(--c-gray-100);
   --bg-3: var(--c-gray-100);
-  --bg-elevated: var(--c-background-100);
+  --bg-elevated: var(--c-gray-100);
   --bg-hover: var(--c-gray-alpha-100);
   --bg-overlay: rgba(0, 0, 0, 0.6);
   --bg-accent: var(--c-blue-700);

@@ -88,7 +88,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   color:var(--text-tertiary);transition:color .1s,background .1s;
 }
 .theme-switch button:hover{color:var(--text-primary)}
-.theme-switch button[aria-checked="true"]{background:var(--bg-3);color:var(--text-primary);border:1px solid var(--border-secondary)}
+.theme-switch button[aria-pressed="true"]{background:var(--bg-3);color:var(--text-primary);border:1px solid var(--border-secondary)}
 
 /* ---- mobile bar -------------------------------------------------------- */
 .mobilebar{
@@ -126,6 +126,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .doc h2:hover .hlink,.doc h3:hover .hlink{opacity:1}
 .doc h3{font-size:16px;font-weight:600;margin:32px 0 12px;color:var(--text-primary);letter-spacing:-.02em}
 .doc section>p{margin-top:12px;color:var(--text-secondary);font-size:15px;line-height:1.7;max-width:65ch}
+.doc section>p a,.doc .lead a{text-decoration:underline;text-underline-offset:3px}
 .doc section>p b,.doc section>p strong{color:var(--text-primary);font-weight:600}
 .doc ul.plain{margin:12px 0 0 0;padding-left:20px;color:var(--text-secondary);font-size:14.5px;line-height:1.7}
 .doc ul.plain li{margin-top:6px}
@@ -345,8 +346,8 @@ pre.code .c{color:var(--text-tertiary)}
 }
 @media(max-width:900px){
   .mobilebar{display:flex}
-  .sidebar{transform:translateX(-100%);transition:transform .2s ease-out;box-shadow:none}
-  .sidebar.open{transform:translateX(0);box-shadow:var(--elevation-lg)}
+  .sidebar{transform:translateX(-100%);visibility:hidden;transition:transform .2s ease-out,visibility 0s .2s;box-shadow:none}
+  .sidebar.open{transform:translateX(0);visibility:visible;transition:transform .2s ease-out;box-shadow:var(--elevation-lg)}
   .main{margin-left:0;padding:32px 20px 96px}
   .doc h1{font-size:32px}
   .pager{grid-template-columns:1fr}

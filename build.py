@@ -656,7 +656,7 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
 <header class="mobilebar">
-  <button id="navBtn" aria-label="Open navigation"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <button id="navBtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
   <span class="mobilebar-brand">mm-ds</span>
   <button data-search-open aria-label="Search">{SEARCH_SVG}</button>
 </header>
@@ -674,10 +674,10 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     </div>
     <div class="sidebar-foot">
       <span class="ver">alpha</span>
-      <div class="theme-switch" role="radiogroup" aria-label="Color theme">
-        <button type="button" data-theme="system" aria-checked="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="light" aria-checked="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="dark" aria-checked="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </nav>
@@ -732,24 +732,32 @@ def p3_var_lines(colors, indent="    "):
 def shell_var_lines(theme, indent="  "):
     sh = SHADOWS[theme]
     gap, ring, _ = FOCUS[theme]
+    # Shell-only role mapping. Divergences from a naive 1:1 map, for legibility:
+    # dark bg-2/bg-elevated use gray-100 (background-200 is #000 in dark - panels
+    # would vanish); light text-tertiary uses gray-900 (gray-700 is 3.2:1 on white,
+    # below WCAG AA for the small text these roles style).
     per = {
         "light": {"overlay": "rgba(0, 0, 0, 0.4)", "success": "var(--c-green-800)",
-                  "material": "rgba(255, 255, 255, 0.8)", "focus": "var(--c-blue-700)"},
+                  "material": "rgba(255, 255, 255, 0.8)", "focus": "var(--c-blue-700)",
+                  "bg2": "var(--c-background-200)", "elevated": "var(--c-background-100)",
+                  "tertiary": "var(--c-gray-900)"},
         "dark": {"overlay": "rgba(0, 0, 0, 0.6)", "success": "var(--c-green-900)",
-                 "material": "rgba(0, 0, 0, 0.75)", "focus": "var(--c-blue-900)"},
+                 "material": "rgba(0, 0, 0, 0.75)", "focus": "var(--c-blue-900)",
+                 "bg2": "var(--c-gray-100)", "elevated": "var(--c-gray-100)",
+                 "tertiary": "var(--c-gray-700)"},
     }[theme]
     lines = [
         "--bg-1: var(--c-background-100)",
-        "--bg-2: var(--c-background-200)",
+        f"--bg-2: {per['bg2']}",
         "--bg-3: var(--c-gray-100)",
-        "--bg-elevated: var(--c-background-100)",
+        f"--bg-elevated: {per['elevated']}",
         "--bg-hover: var(--c-gray-alpha-100)",
         f"--bg-overlay: {per['overlay']}",
         "--bg-accent: var(--c-blue-700)",
         "--bg-accent-subtle: var(--c-blue-100)",
         "--text-primary: var(--c-gray-1000)",
         "--text-secondary: var(--c-gray-900)",
-        "--text-tertiary: var(--c-gray-700)",
+        f"--text-tertiary: {per['tertiary']}",
         "--text-accent: var(--c-blue-900)",
         f"--text-success: {per['success']}",
         "--border-primary: var(--c-gray-alpha-500)",
