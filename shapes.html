@@ -14,22 +14,29 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
-<header class="mobilebar">
-  <button id="navBtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <span class="mobilebar-brand">mm-ds</span>
-  <button data-search-open aria-label="Search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-</header>
-<div class="shell">
-  <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+<div class="frame">
+  <header class="frame-head">
     <a class="brand" href="index.html">
       <span class="brand-mark" aria-hidden="true">m</span>
-      <span><span class="brand-name">mm-ds</span><span class="brand-sub">Design System</span></span>
+      <span class="brand-name">mm-ds Design System</span>
     </a>
-    <button class="searchbtn" type="button" data-search-open>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
-    </button>
-    <div class="nav-scroll">
-      <div class="nav-group">Getting started</div>
+    <div class="head-main">
+      <button id="navBtn" class="navbtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="searchbtn" type="button" data-search-open>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
+      </button>
+      <span class="head-spacer"></span>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <div class="frame-body">
+    <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+      <div class="nav-scroll">
+        <div class="nav-group">Getting started</div>
       <a href="index.html">Introduction</a>
       <div class="nav-group">Foundations</div>
       <a href="colors.html">Colors</a>
@@ -46,42 +53,30 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
       <a href="ai.html">AI &amp; agents</a>
       <a href="design.md">design.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="design.dark.md">design.dark.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-    <div class="sidebar-foot">
-      <span class="ver">alpha</span>
-      <div class="theme-switch" role="group" aria-label="Color theme">
-        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
-    </div>
-  </nav>
-  <div class="backdrop" id="navBackdrop"></div>
-  <main class="main" id="content">
-    <article class="doc">
-      <p class="eyebrow">Foundations</p>
-      <h1>Shapes</h1>
-      <p class="lead">Tight radii - 6, 12, 16, and full - matched to surface size, one family per view.</p>
-      <section id="radii"><h2>Radii<a class="hlink" href="#radii" aria-label="Link to Radii">#</a></h2>
+    </nav>
+    <div class="backdrop" id="navBackdrop"></div>
+    <main class="main" id="content">
+      <article class="doc">
+        <p class="eyebrow">Foundations</p>
+        <h1>Shapes</h1>
+        <p class="lead">Tight radii - 6, 12, 16, and full - matched to surface size, one family per view.</p>
+        <section id="radii"><h2>Radii<a class="hlink" href="#radii" aria-label="Link to Radii">#</a></h2>
 <p>Radii stay tight and consistent.</p><div class="demo-grid"><div><div class="demo-box " style="border-radius:var(--rounded-sm)"></div><div class="demo-head"><code class="tok">rounded-sm</code><span class="demo-val">6px</span></div><div class="demo-desc">Everyday surfaces - buttons, inputs, cards.</div></div><div><div class="demo-box " style="border-radius:var(--rounded-md)"></div><div class="demo-head"><code class="tok">rounded-md</code><span class="demo-val">12px</span></div><div class="demo-desc">Menus and modals.</div></div><div><div class="demo-box " style="border-radius:var(--rounded-lg)"></div><div class="demo-head"><code class="tok">rounded-lg</code><span class="demo-val">16px</span></div><div class="demo-desc">Fullscreen and near-fullscreen surfaces.</div></div><div><div class="demo-box pill" style="border-radius:var(--rounded-full)"></div><div class="demo-head"><code class="tok">rounded-full</code><span class="demo-val">9999px</span></div><div class="demo-desc">Pills, avatars, and circular controls.</div></div></div>
 </section>
 <section id="rules"><h2>Rules<a class="hlink" href="#rules" aria-label="Link to Rules">#</a></h2>
 <div class="callout "><h4>Keep corners coherent</h4><ul><li>One radius family per view - never mix rounded and sharp corners.</li><li>Bigger surface, bigger radius: 6px controls, 12px menus and modals, 16px fullscreen.</li><li><code class="tok">rounded-full</code> is reserved for pills, avatars, and circles.</li></ul></div>
 </section>
-      <nav class="pager" aria-label="Pagination"><a class="prev" href="motion.html"><span class="dir">Previous</span><span class="pg">Motion</span></a><a class="next" href="components.html"><span class="dir">Next</span><span class="pg">Components</span></a></nav>
-      <footer class="foot">
-        <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
-        <a href="design.md">design.md</a>·
-        <a href="design.dark.md">design.dark.md</a>·
-        <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
-      </footer>
-    </article>
-    <aside class="toc" aria-label="On this page">
-      <div class="toc-title">On this page</div>
-      <a href="#radii">Radii</a>
-      <a href="#rules">Rules</a>
-    </aside>
-  </main>
+        <nav class="pager" aria-label="Pagination"><a class="prev" href="motion.html"><span class="dir">Previous</span><span class="pg">Motion</span></a><a class="next" href="components.html"><span class="dir">Next</span><span class="pg">Components</span></a></nav>
+        <footer class="foot">
+          <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
+          <a href="design.md">design.md</a>·
+          <a href="design.dark.md">design.dark.md</a>·
+          <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
+        </footer>
+      </article>
+    </main>
+  </div>
 </div>
 <div class="search-modal" id="searchModal" hidden>
   <div class="search-scrim"></div>

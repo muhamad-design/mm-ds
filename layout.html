@@ -14,22 +14,29 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
-<header class="mobilebar">
-  <button id="navBtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <span class="mobilebar-brand">mm-ds</span>
-  <button data-search-open aria-label="Search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-</header>
-<div class="shell">
-  <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+<div class="frame">
+  <header class="frame-head">
     <a class="brand" href="index.html">
       <span class="brand-mark" aria-hidden="true">m</span>
-      <span><span class="brand-name">mm-ds</span><span class="brand-sub">Design System</span></span>
+      <span class="brand-name">mm-ds Design System</span>
     </a>
-    <button class="searchbtn" type="button" data-search-open>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
-    </button>
-    <div class="nav-scroll">
-      <div class="nav-group">Getting started</div>
+    <div class="head-main">
+      <button id="navBtn" class="navbtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="searchbtn" type="button" data-search-open>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
+      </button>
+      <span class="head-spacer"></span>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <div class="frame-body">
+    <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+      <div class="nav-scroll">
+        <div class="nav-group">Getting started</div>
       <a href="index.html">Introduction</a>
       <div class="nav-group">Foundations</div>
       <a href="colors.html">Colors</a>
@@ -46,23 +53,15 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
       <a href="ai.html">AI &amp; agents</a>
       <a href="design.md">design.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="design.dark.md">design.dark.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-    <div class="sidebar-foot">
-      <span class="ver">alpha</span>
-      <div class="theme-switch" role="group" aria-label="Color theme">
-        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
-    </div>
-  </nav>
-  <div class="backdrop" id="navBackdrop"></div>
-  <main class="main" id="content">
-    <article class="doc">
-      <p class="eyebrow">Foundations</p>
-      <h1>Layout</h1>
-      <p class="lead">A 4px spacing scale, a three-step rhythm, a 1200px content column, and five breakpoints.</p>
-      <section id="spacing"><h2>Spacing<a class="hlink" href="#spacing" aria-label="Link to Spacing">#</a></h2>
+    </nav>
+    <div class="backdrop" id="navBackdrop"></div>
+    <main class="main" id="content">
+      <article class="doc">
+        <p class="eyebrow">Foundations</p>
+        <h1>Layout</h1>
+        <p class="lead">A 4px spacing scale, a three-step rhythm, a 1200px content column, and five breakpoints.</p>
+        <section id="spacing"><h2>Spacing<a class="hlink" href="#spacing" aria-label="Link to Spacing">#</a></h2>
 <p>Everything sits on a <b>4px base</b> (<code class="tok">spacing-base</code>). The named steps multiply it: 4, 8, 12, 16, 24, 32, 40, 64, 96.</p><div class="bar-list"><div class="bar-row"><span class="bar-name"><code class="tok">spacing-1</code></span><span class="bar-val">4px</span><span class="bar-track"><span class="bar-fill" style="width:4.2%"></span></span><span class="bar-desc">Tightest gaps - icon to label</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-2</code></span><span class="bar-val">8px</span><span class="bar-track"><span class="bar-fill" style="width:8.3%"></span></span><span class="bar-desc">Inside a group</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-3</code></span><span class="bar-val">12px</span><span class="bar-track"><span class="bar-fill" style="width:12.5%"></span></span><span class="bar-desc">Compact padding</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-4</code></span><span class="bar-val">16px</span><span class="bar-track"><span class="bar-fill" style="width:16.7%"></span></span><span class="bar-desc">Between groups; compact cards</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-6</code></span><span class="bar-val">24px</span><span class="bar-track"><span class="bar-fill" style="width:25.0%"></span></span><span class="bar-desc">Card padding</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-8</code></span><span class="bar-val">32px</span><span class="bar-track"><span class="bar-fill" style="width:33.3%"></span></span><span class="bar-desc">Between sections</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-10</code></span><span class="bar-val">40px</span><span class="bar-track"><span class="bar-fill" style="width:41.7%"></span></span><span class="bar-desc">Large section breaks</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-16</code></span><span class="bar-val">64px</span><span class="bar-track"><span class="bar-fill" style="width:66.7%"></span></span><span class="bar-desc">Page-level air</span></div><div class="bar-row"><span class="bar-name"><code class="tok">spacing-24</code></span><span class="bar-val">96px</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-desc">Hero spacing</span></div></div>
 </section>
 <section id="rhythm"><h2>Rhythm<a class="hlink" href="#rhythm" aria-label="Link to Rhythm">#</a></h2>
@@ -74,22 +73,16 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 <section id="breakpoints"><h2>Breakpoints<a class="hlink" href="#breakpoints" aria-label="Link to Breakpoints">#</a></h2>
 <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Token</th><th>Min width</th></tr></thead><tbody><tr><td class="mono"><code class="tok">sm</code></td><td class="mono"><button class="copy" type="button" data-copy="401px">401px</button></td></tr><tr><td class="mono"><code class="tok">md</code></td><td class="mono"><button class="copy" type="button" data-copy="601px">601px</button></td></tr><tr><td class="mono"><code class="tok">lg</code></td><td class="mono"><button class="copy" type="button" data-copy="961px">961px</button></td></tr><tr><td class="mono"><code class="tok">xl</code></td><td class="mono"><button class="copy" type="button" data-copy="1200px">1200px</button></td></tr><tr><td class="mono"><code class="tok">2xl</code></td><td class="mono"><button class="copy" type="button" data-copy="1400px">1400px</button></td></tr></tbody></table></div>
 </section>
-      <nav class="pager" aria-label="Pagination"><a class="prev" href="typography.html"><span class="dir">Previous</span><span class="pg">Typography</span></a><a class="next" href="elevation.html"><span class="dir">Next</span><span class="pg">Elevation</span></a></nav>
-      <footer class="foot">
-        <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
-        <a href="design.md">design.md</a>·
-        <a href="design.dark.md">design.dark.md</a>·
-        <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
-      </footer>
-    </article>
-    <aside class="toc" aria-label="On this page">
-      <div class="toc-title">On this page</div>
-      <a href="#spacing">Spacing</a>
-      <a href="#rhythm">Rhythm</a>
-      <a href="#container">Container</a>
-      <a href="#breakpoints">Breakpoints</a>
-    </aside>
-  </main>
+        <nav class="pager" aria-label="Pagination"><a class="prev" href="typography.html"><span class="dir">Previous</span><span class="pg">Typography</span></a><a class="next" href="elevation.html"><span class="dir">Next</span><span class="pg">Elevation</span></a></nav>
+        <footer class="foot">
+          <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
+          <a href="design.md">design.md</a>·
+          <a href="design.dark.md">design.dark.md</a>·
+          <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
+        </footer>
+      </article>
+    </main>
+  </div>
 </div>
 <div class="search-modal" id="searchModal" hidden>
   <div class="search-scrim"></div>

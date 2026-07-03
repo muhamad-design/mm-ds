@@ -626,7 +626,6 @@ def page_html(page, prev_pg, next_pg):
     for sid, heading, inner in sections:
         body.append(f'<section id="{sid}"><h2>{heading}'
                     f'<a class="hlink" href="#{sid}" aria-label="Link to {esc(heading)}">#</a></h2>\n{inner}\n</section>')
-    toc = "\n      ".join(f'<a href="#{sid}">{esc(h)}</a>' for sid, h, _ in sections)
     pager = ""
     if prev_pg or next_pg:
         links = []
@@ -655,52 +654,48 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
-<header class="mobilebar">
-  <button id="navBtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <span class="mobilebar-brand">mm-ds</span>
-  <button data-search-open aria-label="Search">{SEARCH_SVG}</button>
-</header>
-<div class="shell">
-  <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+<div class="frame">
+  <header class="frame-head">
     <a class="brand" href="index.html">
       <span class="brand-mark" aria-hidden="true">m</span>
-      <span><span class="brand-name">mm-ds</span><span class="brand-sub">Design System</span></span>
+      <span class="brand-name">mm-ds Design System</span>
     </a>
-    <button class="searchbtn" type="button" data-search-open>
-      {SEARCH_SVG}<span class="grow">Search…</span><kbd>⌘K</kbd>
-    </button>
-    <div class="nav-scroll">
-      {nav_html(page["file"])}
-    </div>
-    <div class="sidebar-foot">
-      <span class="ver">alpha</span>
+    <div class="head-main">
+      <button id="navBtn" class="navbtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="searchbtn" type="button" data-search-open>
+        {SEARCH_SVG}<span class="grow">Search…</span><kbd>⌘K</kbd>
+      </button>
+      <span class="head-spacer"></span>
       <div class="theme-switch" role="group" aria-label="Color theme">
-        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
-  </nav>
-  <div class="backdrop" id="navBackdrop"></div>
-  <main class="main" id="content">
-    <article class="doc">
-      <p class="eyebrow">{esc(page["group"])}</p>
-      <h1>{esc(h1)}</h1>
-      <p class="lead">{esc(page["lead"])}</p>
-      {nl.join(body)}
-      {pager}
-      <footer class="foot">
-        <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
-        <a href="design.md">design.md</a>·
-        <a href="design.dark.md">design.dark.md</a>·
-        <a href="{REPO_URL}">GitHub</a>
-      </footer>
-    </article>
-    <aside class="toc" aria-label="On this page">
-      <div class="toc-title">On this page</div>
-      {toc}
-    </aside>
-  </main>
+  </header>
+  <div class="frame-body">
+    <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+      <div class="nav-scroll">
+        {nav_html(page["file"])}
+      </div>
+    </nav>
+    <div class="backdrop" id="navBackdrop"></div>
+    <main class="main" id="content">
+      <article class="doc">
+        <p class="eyebrow">{esc(page["group"])}</p>
+        <h1>{esc(h1)}</h1>
+        <p class="lead">{esc(page["lead"])}</p>
+        {nl.join(body)}
+        {pager}
+        <footer class="foot">
+          <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
+          <a href="design.md">design.md</a>·
+          <a href="design.dark.md">design.dark.md</a>·
+          <a href="{REPO_URL}">GitHub</a>
+        </footer>
+      </article>
+    </main>
+  </div>
 </div>
 <div class="search-modal" id="searchModal" hidden>
   <div class="search-scrim"></div>

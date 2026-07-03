@@ -14,22 +14,29 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
-<header class="mobilebar">
-  <button id="navBtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <span class="mobilebar-brand">mm-ds</span>
-  <button data-search-open aria-label="Search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-</header>
-<div class="shell">
-  <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+<div class="frame">
+  <header class="frame-head">
     <a class="brand" href="index.html">
       <span class="brand-mark" aria-hidden="true">m</span>
-      <span><span class="brand-name">mm-ds</span><span class="brand-sub">Design System</span></span>
+      <span class="brand-name">mm-ds Design System</span>
     </a>
-    <button class="searchbtn" type="button" data-search-open>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
-    </button>
-    <div class="nav-scroll">
-      <div class="nav-group">Getting started</div>
+    <div class="head-main">
+      <button id="navBtn" class="navbtn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="searchbtn" type="button" data-search-open>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="grow">Search…</span><kbd>⌘K</kbd>
+      </button>
+      <span class="head-spacer"></span>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <div class="frame-body">
+    <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+      <div class="nav-scroll">
+        <div class="nav-group">Getting started</div>
       <a href="index.html" aria-current="page">Introduction</a>
       <div class="nav-group">Foundations</div>
       <a href="colors.html">Colors</a>
@@ -46,23 +53,15 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
       <a href="ai.html">AI &amp; agents</a>
       <a href="design.md">design.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="design.dark.md">design.dark.md<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-    <div class="sidebar-foot">
-      <span class="ver">alpha</span>
-      <div class="theme-switch" role="group" aria-label="Color theme">
-        <button type="button" data-theme="system" aria-pressed="false" aria-label="System theme" title="System"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="light" aria-pressed="false" aria-label="Light theme" title="Light"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button type="button" data-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
-    </div>
-  </nav>
-  <div class="backdrop" id="navBackdrop"></div>
-  <main class="main" id="content">
-    <article class="doc">
-      <p class="eyebrow">Getting started</p>
-      <h1>mm-ds</h1>
-      <p class="lead">A Geist-based design system for mm products: minimal, high-contrast, light and dark. Token-for-token aligned with Vercel&#x27;s public Geist reference, and readable by people and AI agents alike.</p>
-      <section id="foundations"><h2>Foundations<a class="hlink" href="#foundations" aria-label="Link to Foundations">#</a></h2>
+    </nav>
+    <div class="backdrop" id="navBackdrop"></div>
+    <main class="main" id="content">
+      <article class="doc">
+        <p class="eyebrow">Getting started</p>
+        <h1>mm-ds</h1>
+        <p class="lead">A Geist-based design system for mm products: minimal, high-contrast, light and dark. Token-for-token aligned with Vercel&#x27;s public Geist reference, and readable by people and AI agents alike.</p>
+        <section id="foundations"><h2>Foundations<a class="hlink" href="#foundations" aria-label="Link to Foundations">#</a></h2>
 <div class="card-grid"><a class="card" href="colors.html"><span class="card-title">Colors</span><p>Ten-step scales where every step has a job: backgrounds, borders, fills, text.</p></a><a class="card" href="typography.html"><span class="card-title">Typography</span><p>Geist Sans and Geist Mono across heading, label, copy, and button tokens.</p></a><a class="card" href="layout.html"><span class="card-title">Layout</span><p>A 4px spacing scale, a 1200px content column, and five breakpoints.</p></a><a class="card" href="elevation.html"><span class="card-title">Elevation</span><p>Borders and tonal surfaces first; three quiet shadow tiers.</p></a><a class="card" href="motion.html"><span class="card-title">Motion</span><p>Instant by default; one springy curve when motion earns its place.</p></a><a class="card" href="shapes.html"><span class="card-title">Shapes</span><p>Tight radii: 6, 12, 16, and full - one family per view.</p></a></div>
 </section>
 <section id="patterns"><h2>Patterns<a class="hlink" href="#patterns" aria-label="Link to Patterns">#</a></h2>
@@ -85,23 +84,16 @@ https://muhamad-design.github.io/mm-ds/design.dark.md</pre>
 <section id="attribution"><h2>Attribution<a class="hlink" href="#attribution" aria-label="Link to Attribution">#</a></h2>
 <p>Token values follow Vercel's public Geist reference, published at <a href="https://vercel.com/design.md">vercel.com/design.md</a> for exactly this kind of reuse by tools and agents. mm-ds is an unofficial personal implementation and is not affiliated with or endorsed by Vercel. The Geist typefaces are used under the SIL Open Font License.</p>
 </section>
-      <nav class="pager" aria-label="Pagination"><a class="next" href="colors.html"><span class="dir">Next</span><span class="pg">Colors</span></a></nav>
-      <footer class="foot">
-        <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
-        <a href="design.md">design.md</a>·
-        <a href="design.dark.md">design.dark.md</a>·
-        <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
-      </footer>
-    </article>
-    <aside class="toc" aria-label="On this page">
-      <div class="toc-title">On this page</div>
-      <a href="#foundations">Foundations</a>
-      <a href="#patterns">Patterns</a>
-      <a href="#principles">Principles</a>
-      <a href="#consuming">Consuming the system</a>
-      <a href="#attribution">Attribution</a>
-    </aside>
-  </main>
+        <nav class="pager" aria-label="Pagination"><a class="next" href="colors.html"><span class="dir">Next</span><span class="pg">Colors</span></a></nav>
+        <footer class="foot">
+          <span>Unofficial reference. Token data from Vercel's public <a href="https://vercel.com/design.md">design.md</a>; not affiliated with Vercel.</span>·
+          <a href="design.md">design.md</a>·
+          <a href="design.dark.md">design.dark.md</a>·
+          <a href="https://github.com/muhamad-design/mm-ds">GitHub</a>
+        </footer>
+      </article>
+    </main>
+  </div>
 </div>
 <div class="search-modal" id="searchModal" hidden>
   <div class="search-scrim"></div>
