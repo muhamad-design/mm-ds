@@ -135,40 +135,31 @@ def var_c(name):
 
 # ---- foundations ----------------------------------------------------------------
 def sec_index():
-    foundations = [
-        ("colors.html", "Colors", "Ten-step scales where every step has a job: backgrounds, borders, fills, text."),
-        ("typography.html", "Typography", "Geist Sans and Geist Mono across heading, label, copy, and button tokens."),
-        ("materials.html", "Materials", "Borders first, then three quiet shadow tiers and the focus ring."),
-    ]
-    def cards(items):
-        return '<div class="card-grid">' + "".join(
-            f'<a class="card" href="{f}"><span class="card-title">{esc(t)}</span><p>{esc(d)}</p></a>'
-            for f, t, d in items) + "</div>"
-    comp_links = " ".join(
-        f'<a class="chiplink" href="{p["file"]}">{esc(p["title"])}</a>' for p in COMPONENT_PAGES)
-    consuming = (
-        '<p>Web surfaces can link the generated custom properties directly; agents and tools read the '
-        'markdown specs or the YAML token files. The full rules for layout, shapes, motion, voice, and the '
-        'do\'s and don\'ts live in the specs.</p>'
-        '<pre class="code"><span class="c">/* web */</span>\n'
-        '&lt;link rel="stylesheet" href="assets/tokens.css"&gt;\n'
-        'color: var(--c-gray-1000);\n'
-        'background: var(--c-background-100);\n'
-        'border-radius: var(--rounded-sm);\n\n'
-        '<span class="c"># AI agents - machine-readable specs</span>\n'
-        f'{PAGES_URL}/design.md\n'
-        f'{PAGES_URL}/design.dark.md</pre>')
+    ramp = "".join(f'<span style="background:{var_c("blue-" + s)}"></span>' for s in STEPS)
+    cards = (
+        '<div class="bento">'
+        f'<a class="bcard" href="colors.html"><span class="bprev"><span class="bramp">{ramp}</span></span>'
+        '<span class="btitle">Colors</span><p>A high-contrast, accessible color system in light and dark.</p></a>'
+        '<a class="bcard" href="typography.html"><span class="bprev"><span class="btype">Ag</span>'
+        '<span class="btype btype-mono">Ag</span></span>'
+        '<span class="btitle">Typeface</span><p>Geist Sans and Geist Mono, with every style as a token.</p></a>'
+        '<a class="bcard" href="materials.html"><span class="bprev"><span class="bmat"></span></span>'
+        '<span class="btitle">Materials</span><p>Presets for radii, fills, strokes, and shadows.</p></a>'
+        '<a class="bcard" href="button.html"><span class="bprev"><span class="gbtn gbtn-primary">Deploy Project</span></span>'
+        '<span class="btitle">Components</span><p>Token-driven building blocks, live in both themes.</p></a>'
+        '<a class="bcard" href="brands.html"><span class="bprev"><span class="brand-mark bprev-mark" aria-hidden="true">m</span></span>'
+        '<span class="btitle">Brand</span><p>The mm-ds mark, wordmark, and usage rules.</p></a>'
+        '<a class="bcard" href="ai.html"><span class="bprev"><code class="tok">design.md</code></span>'
+        '<span class="btitle">AI &amp; agents</span><p>The whole system as machine-readable specs.</p></a>'
+        '</div>')
+    attribution = (
+        '<p>Token values follow Vercel\'s public Geist reference, published at '
+        '<a href="https://vercel.com/design.md">vercel.com/design.md</a> for reuse by tools and agents. '
+        'mm-ds is an unofficial personal implementation and is not affiliated with or endorsed by Vercel. '
+        'The Geist typefaces are used under the SIL Open Font License.</p>')
     return [
-        ("foundations", "Foundations", cards(foundations)),
-        ("components", "Components", (
-            '<p>Interface building blocks rendered live from the same variables this site ships.</p>'
-            f'<div class="chiplinks">{comp_links}</div>')),
-        ("consuming", "Consuming the system", consuming),
-        ("attribution", "Attribution", (
-            '<p>Token values follow Vercel\'s public Geist reference, published at '
-            '<a href="https://vercel.com/design.md">vercel.com/design.md</a> for exactly this kind of reuse by '
-            'tools and agents. mm-ds is an unofficial personal implementation and is not affiliated with or '
-            'endorsed by Vercel. The Geist typefaces are used under the SIL Open Font License.</p>')),
+        ("explore", "", cards),
+        ("attribution", "", attribution),
     ]
 
 
@@ -195,90 +186,101 @@ def sec_colors():
     ]
 
 
-def type_specimen_rows(keys):
+TYPE_NOTES = {
+    "heading-72": "Marketing heroes.", "heading-64": "Large marketing headings.",
+    "heading-56": "Marketing headings.", "heading-48": "Large page titles.",
+    "heading-40": "Page titles.", "heading-32": "Large section titles.",
+    "heading-24": "Section titles.", "heading-20": "Subsection titles.",
+    "heading-16": "Card and row titles.", "heading-14": "Dense UI titles.",
+    "button-16": "Large buttons.", "button-14": "Default buttons.", "button-12": "Compact buttons.",
+    "label-20": "Prominent single-line text.", "label-18": "Large form labels.",
+    "label-16": "Form labels and rows.", "label-14": "Default UI text.",
+    "label-14-mono": "UI data and paths.", "label-13": "Dense metadata.",
+    "label-13-mono": "Dense data.", "label-12": "Fine print.", "label-12-mono": "Fine data.",
+    "copy-24": "Prominent body text.", "copy-20": "Lead paragraphs.", "copy-18": "Large body text.",
+    "copy-16": "Default prose.", "copy-14": "Default UI copy.", "copy-14-mono": "Inline code in copy.",
+    "copy-13": "Dense copy.", "copy-13-mono": "Dense code.",
+}
+
+
+def ts_rows(keys):
     rows = []
     for k in keys:
         t = TY[k]
-        fam = t["fontFamily"]
-        ff = "var(--font-mono)" if fam == "Geist Mono" else "var(--font-sans)"
+        ff = "var(--font-mono)" if t["fontFamily"] == "Geist Mono" else "var(--font-sans)"
         ls = t.get("letterSpacing", "")
         style = (f"font-family:{ff};font-size:{t['fontSize']};font-weight:{t['fontWeight']};"
                  f"line-height:{t['lineHeight']};letter-spacing:{ls or 'normal'}")
-        spec = f"{fam} · {t['fontWeight']} · {t['fontSize'][:-2]}/{t['lineHeight'][:-2]}" + (f" · {ls}" if ls else "")
-        rows.append(f'<div class="type-row"><div class="type-specimen" style="{style}">'
-                    f'The quick brown fox jumps over the lazy dog</div>'
-                    f'<div class="type-meta"><code class="tok">{esc(k)}</code>'
-                    f'<span class="type-spec">{esc(spec)}</span></div></div>')
-    return f'<div class="type-list">{"".join(rows)}</div>'
+        disp = " ".join(p.capitalize() for p in k.split("-"))
+        rows.append(f'<div class="ts-row"><span class="ts-sample" style="{style}">{esc(disp)}</span>'
+                    f'<span class="ts-name">{esc(k)}</span>'
+                    f'<span class="ts-note">{esc(TYPE_NOTES.get(k, ""))}</span></div>')
+    return f'<div class="ts-list">{"".join(rows)}</div>'
 
 
 def sec_typography():
     keys = list(TY.keys())
-    groups = {
+    g = {
         "headings": [k for k in keys if k.startswith("heading-")],
         "buttons": [k for k in keys if k.startswith("button-")],
-        "labels": [k for k in keys if k.startswith("label-")],
+        "label": [k for k in keys if k.startswith("label-")],
         "copy": [k for k in keys if k.startswith("copy-")],
     }
-    all_rows = []
-    for k in keys:
-        t = TY[k]
-        all_rows.append(
-            f'<tr><td class="mono"><code class="tok">{esc(k)}</code></td><td>{esc(t["fontFamily"])}</td>'
-            f'<td class="mono">{esc(t["fontSize"])}</td><td class="mono">{esc(t["fontWeight"])}</td>'
-            f'<td class="mono">{esc(t["lineHeight"])}</td><td class="mono">{esc(t.get("letterSpacing", "0"))}</td></tr>')
     return [
-        ("families", "Families", (
-            '<p><b>Geist Sans</b> sets interface text and prose; <b>Geist Mono</b> sets code, data, and anything '
-            'that benefits from tabular figures. Both are open-source typefaces released under the SIL Open Font '
-            'License. Two weights per view is the ceiling.</p>')),
+        ("usage", "Usage", (
+            '<p>Every text style ships as a token carrying family, size, weight, line height, and letter '
+            'spacing. <b>Geist Sans</b> sets interface text and prose; <b>Geist Mono</b> sets code and data. '
+            'Both are open source under the SIL Open Font License. The specimens below render live from the '
+            'token values; agents read the same values from <a href="design.md">design.md</a>.</p>')),
         ("headings", "Headings", (
-            '<p><code class="tok">heading-72</code> down to <code class="tok">heading-14</code> title pages and '
-            'sections. Letter spacing tightens as the size grows, so the big sizes stay dense and intentional.</p>'
-            + type_specimen_rows(groups["headings"]))),
+            '<p>Used to introduce pages and sections. Letter spacing tightens as the size grows.</p>'
+            + ts_rows(g["headings"]))),
         ("buttons", "Buttons", (
-            '<p>Medium-weight labels for buttons and compact controls.</p>'
-            + type_specimen_rows(groups["buttons"]))),
-        ("labels", "Labels", (
-            '<p>Single-line, scannable text: navigation, form labels, table headers, metadata. The '
-            '<code class="tok">-mono</code> variants keep the same metrics in Geist Mono.</p>'
-            + type_specimen_rows(groups["labels"]))),
+            '<p>Medium-weight labels for buttons and compact controls.</p>' + ts_rows(g["buttons"]))),
+        ("label", "Label", (
+            '<p>Single-line text that gets scanned, not read: navigation, form labels, table headers, '
+            'metadata. The <code class="tok">-mono</code> variants keep the same metrics in Geist Mono.</p>'
+            + ts_rows(g["label"]))),
         ("copy", "Copy", (
             '<p>Multi-line body text with taller line heights. <code class="tok">copy-14</code> and '
-            '<code class="tok">label-14</code> cover most interface text.</p>'
-            + type_specimen_rows(groups["copy"]))),
-        ("all", "All tokens", tbl(
-            ["Token", "Family", "Size", "Weight", "Line height", "Letter spacing"], all_rows)),
+            '<code class="tok">label-14</code> cover most interface text.</p>' + ts_rows(g["copy"]))),
     ]
+
+
+def mat_tiles(tiers):
+    cells = []
+    for name, radius, shadow, note in tiers:
+        sh = "none" if shadow is None else f"var(--shadow-{shadow})"
+        recipe = f"rounded-{radius}" + (f" · shadow-{shadow}" if shadow else " · gray-alpha-400")
+        cells.append(
+            f'<div><div class="mat-stage"><div class="mat-sample" '
+            f'style="border-radius:var(--rounded-{radius});box-shadow:{sh}"></div></div>'
+            f'<div class="demo-head"><code class="tok">material-{esc(name)}</code>'
+            f'<span class="demo-val">{esc(recipe)}</span></div>'
+            f'<div class="demo-desc">{esc(note)}</div></div>')
+    return f'<div class="mat-grid">{"".join(cells)}</div>'
 
 
 def sec_materials():
-    tiers = [
-        ("border", "Border", "The default material: a translucent gray-alpha-400 border, no shadow at all."),
-        ("card", "Small", "Raised cards and subtle lifts. Tooltips use this tier too."),
-        ("menu", "Medium", "Popovers, dropdown menus, and other transient surfaces."),
-        ("modal", "Large", "Modals and dialogs - the deepest shadow in the system."),
-    ]
-    cells = []
-    for key, name, desc in tiers:
-        shadow = "none" if key == "border" else f"var(--shadow-{key})"
-        vals = ("" if key == "border" else
-                f'<div class="elev-vals"><span>L {esc(SHADOWS["light"][key])}</span>'
-                f'<span>D {esc(SHADOWS["dark"][key])}</span></div>')
-        tok = "gray-alpha-400" if key == "border" else f"shadow-{key}"
-        cells.append(
-            f'<div><div class="elev-card" style="box-shadow:{shadow}"></div>'
-            f'<div class="demo-head"><b>{esc(name)}</b><code class="tok">{esc(tok)}</code></div>'
-            f'<div class="demo-desc">{esc(desc)}</div>{vals}</div>')
+    surface = mat_tiles([
+        ("base", "sm", None, "The resting material: a translucent border, no shadow."),
+        ("small", "sm", "card", "Raised cards and subtle lifts."),
+        ("medium", "sm", "menu", "Emphasized surfaces that stay in the page flow."),
+        ("large", "md", "modal", "The strongest on-page emphasis."),
+    ])
+    floating = mat_tiles([
+        ("tooltip", "sm", "card", "Tooltips take the lightest floating material."),
+        ("menu", "md", "menu", "Popovers, dropdowns, and other transient surfaces."),
+        ("modal", "md", "modal", "Modals and dialogs above a scrim."),
+        ("fullscreen", "lg", "modal", "Sheets and fullscreen surfaces."),
+    ])
     lf, df = FOCUS["light"], FOCUS["dark"]
     focus_demo = demo(
         '<button class="gbtn gbtn-secondary" type="button" style="box-shadow:var(--focus-ring)">Focused</button>'
         '<button class="gbtn gbtn-secondary" type="button">Tab to me</button>')
     return [
-        ("approach", "Borders first", (
-            '<p>Hierarchy comes from borders and tonal surfaces before shadows, so the shadows that remain are '
-            'quiet. Every tier below renders from the live values - flip the theme to compare.</p>')),
-        ("materials", "Materials", f'<div class="elev-grid">{"".join(cells)}</div>'),
+        ("surface", "Surface", "<p>On the page.</p>" + surface),
+        ("floating", "Floating", "<p>Above the page.</p>" + floating),
         ("focus", "Focus ring", (
             '<p>Focus is a two-layer ring: a 2px gap in the surface color, then a 2px blue ring. It shows on '
             'every interactive element at <code class="tok">:focus-visible</code>.</p>'
@@ -287,6 +289,13 @@ def sec_materials():
                 f'Light: <code class="tok">box-shadow: 0 0 0 2px {lf[0]}, 0 0 0 4px {lf[1]}</code> ({lf[2]}).',
                 f'Dark: <code class="tok">box-shadow: 0 0 0 2px {df[0]}, 0 0 0 4px {df[1]}</code> ({df[2]}).',
             ]))),
+        ("best-practices", "Best Practices", callout("Choosing a material", [
+            "Match the material to the layer: surface materials stay in the page flow, floating materials sit "
+            "above it.",
+            "Depth comes from borders and tonal surfaces first; shadows stay quiet.",
+            "Tooltips always take the lightest floating material.",
+            "Pair modal and fullscreen materials with a scrim behind them.",
+        ])),
     ]
 
 
@@ -717,10 +726,8 @@ COMPONENT_PAGES = [
 
 # ---- pages ----------------------------------------------------------------------
 PAGES = [
-    {"file": "index.html", "title": "Introduction", "h1": "mm-ds", "group": "Foundations",
-     "lead": "A Geist-based design system for mm products: minimal, high-contrast, light and dark. "
-             "Token-for-token aligned with Vercel's public Geist reference, and readable by people and AI "
-             "agents alike.",
+    {"file": "index.html", "title": "Introduction", "h1": "mm-ds Design System", "group": "Foundations",
+     "lead": "A Geist-based design system for building consistent web experiences.",
      "desc": "mm-ds - a Geist-based design system: tokens, typography, components, and machine-readable specs.",
      "sections": sec_index},
     {"file": "colors.html", "title": "Colors", "group": "Foundations",
@@ -729,13 +736,12 @@ PAGES = [
      "desc": "The mm-ds color system - 10 scales in light and dark, with P3 variants.",
      "sections": sec_colors},
     {"file": "typography.html", "title": "Typography", "group": "Foundations",
-     "lead": "Geist Sans for interface and prose, Geist Mono for code and data. Every size, weight, and tracking "
-             "value ships as a token.",
+     "lead": "Rules of typesetting throughout the system.",
      "desc": "mm-ds typography - heading, label, copy, and button tokens in Geist Sans and Geist Mono.",
      "sections": sec_typography},
     {"file": "materials.html", "title": "Materials", "group": "Foundations",
-     "lead": "Depth without noise: a border-first material, three quiet shadow tiers, and the two-layer focus ring.",
-     "desc": "mm-ds materials - border, small, medium, and large shadow tiers plus the focus ring, in light and dark.",
+     "lead": "Presets for radii, fills, strokes, and shadows.",
+     "desc": "mm-ds materials - surface and floating material presets plus the focus ring, in light and dark.",
      "sections": sec_materials},
     {"file": "brands.html", "title": "mm-ds", "group": "Brands",
      "lead": "How to use the mm-ds mark and wordmark, and how to write the name.",
@@ -786,8 +792,11 @@ def page_html(page, prev_pg, next_pg):
     sections = page["sections"]()
     body = []
     for sid, heading, inner in sections:
-        body.append(f'<section id="{sid}"><h2>{heading}'
-                    f'<a class="hlink" href="#{sid}" aria-label="Link to {esc(heading)}">#</a></h2>\n{inner}\n</section>')
+        if heading:
+            body.append(f'<section id="{sid}"><h2>{heading}'
+                        f'<a class="hlink" href="#{sid}" aria-label="Link to {esc(heading)}">#</a></h2>\n{inner}\n</section>')
+        else:
+            body.append(f'<section id="{sid}">\n{inner}\n</section>')
     pager = ""
     if prev_pg or next_pg:
         links = []
@@ -974,11 +983,21 @@ def search_index():
             continue
         ix.append({"t": name, "k": "Color", "p": "colors.html#scales", "v": f"{LC[name]} · {DC[name]}",
                    "c": LC[name]})
+    def ty_anchor(name):
+        if name.startswith("heading-"):
+            return "typography.html#headings"
+        if name.startswith("button-"):
+            return "typography.html#buttons"
+        if name.startswith("label-"):
+            return "typography.html#label"
+        return "typography.html#copy"
+
     for name, t in TY.items():
-        ix.append({"t": name, "k": "Typography", "p": "typography.html#all",
+        ix.append({"t": name, "k": "Typography", "p": ty_anchor(name),
                    "v": f"{t['fontSize'][:-2]}/{t['lineHeight'][:-2]} · {t['fontWeight']}"})
     for k in SHADOWS["light"]:
-        ix.append({"t": f"shadow-{k}", "k": "Materials", "p": "materials.html#materials", "v": ""})
+        ix.append({"t": f"shadow-{k}", "k": "Materials",
+                   "p": "materials.html#surface" if k == "card" else "materials.html#floating", "v": ""})
     for name, c in CO.items():
         target = "button.html#variants" if name.startswith("button") else "input.html#sizes"
         ix.append({"t": name, "k": "Component", "p": target, "v": f"h {c.get('height', '')}"})

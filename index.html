@@ -73,27 +73,13 @@ document.documentElement.setAttribute('data-theme',d);document.documentElement.s
     <div class="backdrop" id="navBackdrop"></div>
     <main class="main" id="content">
       <article class="doc">
-        <h1>mm-ds</h1>
-        <p class="lead">A Geist-based design system for mm products: minimal, high-contrast, light and dark. Token-for-token aligned with Vercel&#x27;s public Geist reference, and readable by people and AI agents alike.</p>
-        <section id="foundations"><h2>Foundations<a class="hlink" href="#foundations" aria-label="Link to Foundations">#</a></h2>
-<div class="card-grid"><a class="card" href="colors.html"><span class="card-title">Colors</span><p>Ten-step scales where every step has a job: backgrounds, borders, fills, text.</p></a><a class="card" href="typography.html"><span class="card-title">Typography</span><p>Geist Sans and Geist Mono across heading, label, copy, and button tokens.</p></a><a class="card" href="materials.html"><span class="card-title">Materials</span><p>Borders first, then three quiet shadow tiers and the focus ring.</p></a></div>
+        <h1>mm-ds Design System</h1>
+        <p class="lead">A Geist-based design system for building consistent web experiences.</p>
+        <section id="explore">
+<div class="bento"><a class="bcard" href="colors.html"><span class="bprev"><span class="bramp"><span style="background:var(--c-blue-100)"></span><span style="background:var(--c-blue-200)"></span><span style="background:var(--c-blue-300)"></span><span style="background:var(--c-blue-400)"></span><span style="background:var(--c-blue-500)"></span><span style="background:var(--c-blue-600)"></span><span style="background:var(--c-blue-700)"></span><span style="background:var(--c-blue-800)"></span><span style="background:var(--c-blue-900)"></span><span style="background:var(--c-blue-1000)"></span></span></span><span class="btitle">Colors</span><p>A high-contrast, accessible color system in light and dark.</p></a><a class="bcard" href="typography.html"><span class="bprev"><span class="btype">Ag</span><span class="btype btype-mono">Ag</span></span><span class="btitle">Typeface</span><p>Geist Sans and Geist Mono, with every style as a token.</p></a><a class="bcard" href="materials.html"><span class="bprev"><span class="bmat"></span></span><span class="btitle">Materials</span><p>Presets for radii, fills, strokes, and shadows.</p></a><a class="bcard" href="button.html"><span class="bprev"><span class="gbtn gbtn-primary">Deploy Project</span></span><span class="btitle">Components</span><p>Token-driven building blocks, live in both themes.</p></a><a class="bcard" href="brands.html"><span class="bprev"><span class="brand-mark bprev-mark" aria-hidden="true">m</span></span><span class="btitle">Brand</span><p>The mm-ds mark, wordmark, and usage rules.</p></a><a class="bcard" href="ai.html"><span class="bprev"><code class="tok">design.md</code></span><span class="btitle">AI &amp; agents</span><p>The whole system as machine-readable specs.</p></a></div>
 </section>
-<section id="components"><h2>Components<a class="hlink" href="#components" aria-label="Link to Components">#</a></h2>
-<p>Interface building blocks rendered live from the same variables this site ships.</p><div class="chiplinks"><a class="chiplink" href="avatar.html">Avatar</a> <a class="chiplink" href="badge.html">Badge</a> <a class="chiplink" href="banner.html">Banner</a> <a class="chiplink" href="button.html">Button</a> <a class="chiplink" href="checkbox.html">Checkbox</a> <a class="chiplink" href="code-block.html">Code Block</a> <a class="chiplink" href="empty-state.html">Empty State</a> <a class="chiplink" href="input.html">Input</a> <a class="chiplink" href="kbd.html">Keyboard Input</a> <a class="chiplink" href="note.html">Note</a> <a class="chiplink" href="pagination.html">Pagination</a> <a class="chiplink" href="progress.html">Progress</a> <a class="chiplink" href="radio.html">Radio</a> <a class="chiplink" href="select.html">Select</a> <a class="chiplink" href="skeleton.html">Skeleton</a> <a class="chiplink" href="spinner.html">Spinner</a> <a class="chiplink" href="switch.html">Switch</a> <a class="chiplink" href="table.html">Table</a> <a class="chiplink" href="textarea.html">Textarea</a> <a class="chiplink" href="tooltip.html">Tooltip</a></div>
-</section>
-<section id="consuming"><h2>Consuming the system<a class="hlink" href="#consuming" aria-label="Link to Consuming the system">#</a></h2>
-<p>Web surfaces can link the generated custom properties directly; agents and tools read the markdown specs or the YAML token files. The full rules for layout, shapes, motion, voice, and the do's and don'ts live in the specs.</p><pre class="code"><span class="c">/* web */</span>
-&lt;link rel="stylesheet" href="assets/tokens.css"&gt;
-color: var(--c-gray-1000);
-background: var(--c-background-100);
-border-radius: var(--rounded-sm);
-
-<span class="c"># AI agents - machine-readable specs</span>
-https://muhamad-design.github.io/mm-ds/design.md
-https://muhamad-design.github.io/mm-ds/design.dark.md</pre>
-</section>
-<section id="attribution"><h2>Attribution<a class="hlink" href="#attribution" aria-label="Link to Attribution">#</a></h2>
-<p>Token values follow Vercel's public Geist reference, published at <a href="https://vercel.com/design.md">vercel.com/design.md</a> for exactly this kind of reuse by tools and agents. mm-ds is an unofficial personal implementation and is not affiliated with or endorsed by Vercel. The Geist typefaces are used under the SIL Open Font License.</p>
+<section id="attribution">
+<p>Token values follow Vercel's public Geist reference, published at <a href="https://vercel.com/design.md">vercel.com/design.md</a> for reuse by tools and agents. mm-ds is an unofficial personal implementation and is not affiliated with or endorsed by Vercel. The Geist typefaces are used under the SIL Open Font License.</p>
 </section>
         <nav class="pager" aria-label="Pagination"><a class="next" href="colors.html"><span class="dir">Next</span><span class="pg">Colors</span></a></nav>
         <footer class="foot">
