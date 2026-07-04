@@ -66,17 +66,44 @@
     document.body.removeChild(ta);
     return ok;
   }
+  var toastEl = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'copy-toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1200);
+  }
+  function copyText(text, el) {
+    function done() {
+      if (el && el.classList.contains('copy')) flash(el);
+      else toast('Copied ' + text);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () {
+        if (legacyCopy(text)) done();
+      });
+    } else if (legacyCopy(text)) {
+      done();
+    }
+  }
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-copy]');
     if (!t) return;
-    var text = t.getAttribute('data-copy');
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { flash(t); }, function () {
-        if (legacyCopy(text)) flash(t);
-      });
-    } else if (legacyCopy(text)) {
-      flash(t);
-    }
+    copyText(t.getAttribute('data-copy'), t);
+  });
+  /* right click on a color swatch copies the raw value for the current theme */
+  document.addEventListener('contextmenu', function (e) {
+    var t = e.target.closest('[data-raw-light]');
+    if (!t) return;
+    e.preventDefault();
+    var dark = root.getAttribute('data-theme') === 'dark';
+    copyText(t.getAttribute(dark ? 'data-raw-dark' : 'data-raw-light'), null);
   });
 
   /* ---- toc scroll-spy -------------------------------------------------- */

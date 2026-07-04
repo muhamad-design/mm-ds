@@ -173,49 +173,25 @@ def sec_index():
 
 
 def sec_colors():
-    steps = tbl(["Step", "Role"], [
-        f'<tr><td class="mono"><code class="tok">{s}</code></td><td>{esc(r)}</td></tr>' for s, r in STEP_ROLES])
-    base_note = ('<p>Four aliases sit on top of the scales: <code class="tok">primary</code> and '
-                 '<code class="tok">secondary</code> for text, <code class="tok">tertiary</code> for the '
-                 'link-and-focus blue, and <code class="tok">neutral</code> for a plain neutral fill.</p>')
-    accents_html = ('<p><code class="tok">blue</code> carries links, focus, and success; '
-                    '<code class="tok">red</code> errors; <code class="tok">amber</code> warnings. '
-                    '<code class="tok">green</code>, <code class="tok">teal</code>, <code class="tok">purple</code>, '
-                    'and <code class="tok">pink</code> extend the palette for charts and product accents. '
-                    'Click any value to copy it.</p>')
-    for a in ACCENTS:
-        accents_html += f'<h3 id="{a}">{a}<a class="hlink" href="#{a}" aria-label="Link to {a}">#</a></h3>'
-        accents_html += color_table([f"{a}-{s}" for s in STEPS])
-    p3_html = ('<p>Every accent step also ships a wide-gamut <code class="tok">oklch()</code> value for '
-               'Display P3 screens, under the same name with a <code class="tok">-p3</code> suffix. '
-               'The sRGB hex is the fallback.</p>')
-    for a in ACCENTS:
-        rows = []
-        for s in STEPS:
-            k = f"{a}-{s}-p3"
-            rows.append(f'<tr><td class="mono"><code class="tok">{k}</code></td>'
-                        f'<td class="mono">{copyb(LC[k])}</td><td class="mono">{copyb(DC[k])}</td></tr>')
-        p3_html += f'<h3 id="p3-{a}">{a} P3</h3>' + tbl(["Token", "Light", "Dark"], rows)
+    scales = [("Backgrounds", ["background-100", "background-200"]),
+              ("Gray", [f"gray-{s}" for s in STEPS]),
+              ("Gray alpha", [f"gray-alpha-{s}" for s in STEPS])]
+    scales += [(a.capitalize(), [f"{a}-{s}" for s in STEPS]) for a in ACCENTS]
+    rows = []
+    for label, names in scales:
+        cells = []
+        for n in names:
+            cells.append(
+                f'<button class="scale-swatch" type="button" style="background:{var_c(n)}" '
+                f'title="{esc(n)}" aria-label="{esc(n)}" data-copy="{esc(n)}" '
+                f'data-raw-light="{esc(LC[n])}" data-raw-dark="{esc(DC[n])}"></button>')
+        rows.append(f'<div class="scale-row"><span class="scale-label">{esc(label)}</span>'
+                    f'<div class="scale-strip">{"".join(cells)}</div></div>')
     return [
-        ("steps", "How steps work", (
-            '<p>Each non-background scale runs ten steps, <code class="tok">100</code> to '
-            '<code class="tok">1000</code>. A step is a role, not just a lightness: backgrounds live at the '
-            'bottom, borders in the middle, fills and text at the top. Hover and active states move one step up.</p>'
-            + steps)),
-        ("base", "Base tokens", base_note + color_table(["primary", "secondary", "tertiary", "neutral"])),
-        ("backgrounds", "Backgrounds", (
-            '<p><code class="tok">background-100</code> is the page and card surface. '
-            '<code class="tok">background-200</code> exists only for subtle separation between areas - '
-            'never as a general fill.</p>' + color_table(["background-100", "background-200"]))),
-        ("gray", "Gray", (
-            '<p>Solid gray holds its contrast on any surface - use it for text and opaque fills.</p>'
-            + color_table([f"gray-{s}" for s in STEPS]))),
-        ("gray-alpha", "Gray alpha", (
-            '<p>The translucent companion scale. Because it layers over whatever sits underneath, it is the '
-            'right choice for borders, dividers, hover tints, and overlays.</p>'
-            + color_table([f"gray-alpha-{s}" for s in STEPS]))),
-        ("accents", "Accent scales", accents_html),
-        ("p3", "Wide gamut (P3)", p3_html),
+        ("scales", "Scales", (
+            '<p>There are 10 color scales in the system. P3 colors are used on supported browsers and '
+            'displays.</p>'
+            f'<div class="scales">{"".join(rows)}</div>')),
     ]
 
 
@@ -748,10 +724,9 @@ PAGES = [
      "desc": "mm-ds - a Geist-based design system: tokens, typography, components, and machine-readable specs.",
      "sections": sec_index},
     {"file": "colors.html", "title": "Colors", "group": "Foundations",
-     "lead": "Ten-step scales where every step has a job. Solid gray for text and fills, translucent gray-alpha "
-             "for borders and overlays, and seven accent scales that carry meaning.",
-     "desc": "The mm-ds color system - gray, gray-alpha, and seven accent scales in light and dark, with P3 "
-             "variants.",
+     "lead": "Learn how to work with our color system. Click a swatch to copy the token; right click to copy "
+             "the raw value.",
+     "desc": "The mm-ds color system - 10 scales in light and dark, with P3 variants.",
      "sections": sec_colors},
     {"file": "typography.html", "title": "Typography", "group": "Foundations",
      "lead": "Geist Sans for interface and prose, Geist Mono for code and data. Every size, weight, and tracking "
@@ -994,22 +969,11 @@ def search_index():
     for p in PAGES:
         ix.append({"t": p["title"] if p["group"] != "Brands" else "Brands", "k": "Page", "p": p["file"], "v": ""})
 
-    def anchor(name):
-        if name.startswith("background"):
-            return "colors.html#backgrounds"
-        if name.startswith("gray-alpha"):
-            return "colors.html#gray-alpha"
-        if name.startswith("gray"):
-            return "colors.html#gray"
-        for a in ACCENTS:
-            if name.startswith(a):
-                return f"colors.html#{a}"
-        return "colors.html#base"
-
     for name in LC:
         if name.endswith("-p3"):
             continue
-        ix.append({"t": name, "k": "Color", "p": anchor(name), "v": f"{LC[name]} · {DC[name]}", "c": LC[name]})
+        ix.append({"t": name, "k": "Color", "p": "colors.html#scales", "v": f"{LC[name]} · {DC[name]}",
+                   "c": LC[name]})
     for name, t in TY.items():
         ix.append({"t": name, "k": "Typography", "p": "typography.html#all",
                    "v": f"{t['fontSize'][:-2]}/{t['lineHeight'][:-2]} · {t['fontWeight']}"})
